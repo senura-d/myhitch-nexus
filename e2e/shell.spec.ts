@@ -41,7 +41,8 @@ test.describe("Navigation", () => {
 
     await (await siteNav(page)).getByRole("link", { name: "Home" }).click();
 
-    await expect(page).toHaveURL(/localhost:\d+\/$/);
+    // Asserted by content rather than URL: under GitHub Pages the site is
+    // served from a repository subpath, so "home" is not "/".
     await expect(
       page.getByRole("heading", { name: "Continue watching" }),
     ).toBeVisible();
@@ -57,7 +58,9 @@ test.describe("Navigation", () => {
     if (await railToggle.isVisible()) await railToggle.click();
 
     await page.getByRole("link", { name: /Back to Nexus/ }).click();
-    await expect(page).toHaveURL(/localhost:\d+\/$/);
+    await expect(
+      page.getByRole("heading", { name: "Continue watching" }),
+    ).toBeVisible();
   });
 });
 

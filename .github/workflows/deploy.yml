@@ -25,6 +25,11 @@ jobs:
   build:
     name: Verify & build
     runs-on: ubuntu-latest
+    env:
+      # Pages serves this repo from /<repo>. Set once here so the build, the
+      # static server used by the tests, and Playwright's baseURL all agree —
+      # if they drift, every asset 404s and navigations hang.
+      NEXT_PUBLIC_BASE_PATH: /myhitch-nexus
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

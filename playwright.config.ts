@@ -1,7 +1,19 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const PORT = Number(process.env.PORT ?? 3100);
-const BASE_URL = process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${PORT}`;
+
+/**
+ * Must match `basePath` in next.config.ts — in CI the export is built for a
+ * repository subpath, so the tests have to drive it from that prefix too.
+ * Getting this wrong makes every asset 404 and every navigation hang.
+ */
+const BASE_PATH = (
+  process.env.NEXT_PUBLIC_BASE_PATH ??
+  (process.env.GITHUB_ACTIONS === "true" ? "/myhitch-nexus" : "")
+).replace(/\/$/, "");
+
+const BASE_URL =
+  process.env.PLAYWRIGHT_BASE_URL ?? `http://localhost:${PORT}${BASE_PATH}`;
 
 export default defineConfig({
   testDir: "./e2e",
@@ -38,7 +50,10 @@ export default defineConfig({
     ? undefined
     : {
         command: `node scripts/serve-static.mjs --port ${PORT}`,
-        url: BASE_URL,
+        // Probe the base path, not the origin: under a subpath the root is a
+        // 404 and Playwright would give up before the server was ever asked
+        // for a real page.
+        url: `${BASE_URL}/`,
         reuseExistingServer: !process.env.CI,
         timeout: 60_000,
       },

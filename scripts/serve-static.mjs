@@ -23,6 +23,17 @@ const readFlag = (name, fallback) => {
 const PORT = Number(process.env.PORT ?? readFlag("port", "3100"));
 const ROOT = resolve(process.cwd(), readFlag("dir", "out"));
 
+/**
+ * Must match `basePath` in next.config.ts. On GitHub Pages the site lives
+ * under a repository subpath, so the export's HTML asks for
+ * /<repo>/_next/... — serving it from the root would 404 every asset and the
+ * page would never finish loading.
+ */
+const BASE_PATH = (
+  process.env.NEXT_PUBLIC_BASE_PATH ??
+  readFlag("base-path", process.env.GITHUB_ACTIONS === "true" ? "/myhitch-nexus" : "")
+).replace(/\/$/, "");
+
 const MIME = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -55,7 +66,13 @@ if (!existsSync(ROOT)) {
 
 /** Resolve a URL path to a file inside ROOT, or null if it escapes / is missing. */
 function resolveFile(urlPath) {
-  const decoded = decodeURIComponent(urlPath.split("?")[0].split("#")[0]);
+  let decoded = decodeURIComponent(urlPath.split("?")[0].split("#")[0]);
+
+  // Strip the deployment prefix so `out/` can stay mounted at its own root.
+  if (BASE_PATH && decoded.startsWith(BASE_PATH)) {
+    decoded = decoded.slice(BASE_PATH.length) || "/";
+  }
+
   const safe = normalize(decoded).replace(/^(\.\.[/\\])+/, "");
   const target = join(ROOT, safe);
 
@@ -126,10 +143,19 @@ server.on("clientError", (_error, socket) => {
 server.keepAliveTimeout = 30_000;
 server.headersTimeout = 35_000;
 
+// Failing to bind is fatal — staying alive here would make Playwright wait on
+// a server that will never answer. Only per-connection faults are survivable.
+server.on("error", (error) => {
+  console.error(`[serve-static] ${error.message}`);
+  process.exit(1);
+});
+
 process.on("uncaughtException", (error) => {
   console.error("[serve-static] recovered:", error.message);
 });
 
 server.listen(PORT, () => {
-  console.log(`[serve-static] serving ${ROOT} on http://localhost:${PORT}`);
+  console.log(
+    `[serve-static] serving ${ROOT} on http://localhost:${PORT}${BASE_PATH || "/"}`,
+  );
 });
