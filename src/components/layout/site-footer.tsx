@@ -100,6 +100,9 @@ export function SiteFooter() {
             <Link href="/admin" className="transition-colors hover:text-fg">
               Admin console
             </Link>
+            <Link href="/sitemap" className="transition-colors hover:text-fg">
+              Sitemap
+            </Link>
             <Link href="/auth/register" className="transition-colors hover:text-fg">
               Create an account
             </Link>
