@@ -102,6 +102,27 @@ custom properties, surfaced to Tailwind as semantic names (`bg-surface-2`,
 - **No web fonts.** Font stacks resolve locally. `next/font/google` needs to
   reach Google at build time, which makes builds fail-slow behind a firewall.
 
+### App shell: first load and failure states
+
+- **Boot splash** (`components/layout/boot-splash.tsx`) is rendered into the
+  prerendered HTML, so it paints before the JS bundle arrives rather than
+  showing a blank page. It holds briefly so a fast load reads as a reveal
+  instead of a flicker, fades, then unmounts so nothing intercepts clicks.
+  Skipped entirely under `prefers-reduced-motion`.
+- **`NexusLoader`** — the logo's three nodes lighting in sequence — is shared by
+  the splash, `app/loading.tsx` and the offline screen, so navigation feels
+  continuous with startup. Pure CSS, so it animates pre-hydration.
+- **Offline** (`components/layout/network-status.tsx`) replaces the page when
+  the browser goes offline, rather than letting people click into surfaces that
+  cannot load. Reconnecting refetches queries in place — no reload — and a
+  transient banner confirms recovery. `ConnectionError` is the inline variant
+  for a single failed panel.
+- **Errors** — `app/error.tsx` (route) and `app/global-error.tsx` (root) offer
+  retry with the technical detail collapsed. `global-error` uses a plain `<a>`
+  on purpose: once the root layout has failed, client routing cannot be trusted
+  to recover.
+- **404** — `app/not-found.tsx`, with suggested routes.
+
 ### Determinism
 
 Mock data must render identically on server and client, so nothing calls
@@ -148,6 +169,18 @@ several headless browsers at once saturate it.
 ## Deployment
 
 Pushes to `main` run typecheck, lint, the static export and the Playwright suite
-before publishing `out/` to GitHub Pages
-(`.github/workflows/deploy.yml`). `basePath` is set automatically when building
-in Actions so asset paths resolve under the repository subpath.
+before publishing `out/` to GitHub Pages (`.github/workflows/deploy.yml`).
+
+Pages serves this repo from `/myhitch-nexus`, so the build needs a `basePath`
+there and none locally. **Three things have to agree on that value** — the
+build, the static server, and Playwright's `baseURL` — so it is resolved once
+from `NEXT_PUBLIC_BASE_PATH` (with a `GITHUB_ACTIONS` fallback) and set for the
+whole job in the workflow. When they drift, the export requests
+`/myhitch-nexus/_next/...` from a server mounted at `/`, every asset 404s, and
+navigations hang rather than fail loudly.
+
+To reproduce the deployed configuration locally:
+
+```bash
+NEXT_PUBLIC_BASE_PATH=/myhitch-nexus npm run test:e2e
+```
