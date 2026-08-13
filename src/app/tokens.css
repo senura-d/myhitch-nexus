@@ -1,0 +1,159 @@
+/* =========================================================================
+   MYHitch Nexus — design tokens
+   -------------------------------------------------------------------------
+   Values are stored as space-separated RGB channels so Tailwind can apply
+   opacity modifiers:  rgb(var(--nx-bg) / <alpha-value>)  ->  bg-bg/60
+
+   Dark is the default (`:root`) because the viewing surfaces — player, video
+   pages, live — are the heart of the product. Light is an opt-in theme applied
+   via [data-theme="light"] on <html>, used mostly for studio/admin dashboards.
+   ========================================================================= */
+
+:root {
+  color-scheme: dark;
+
+  /* --- Surfaces: near-black with a cool blue cast so posters read warm --- */
+  --nx-bg: 10 11 14; /* page ground */
+  --nx-surface: 16 18 23; /* cards, nav */
+  --nx-surface-2: 23 26 33; /* raised: menus, popovers */
+  --nx-surface-3: 31 35 44; /* hover / input wells */
+  --nx-overlay: 6 7 10; /* modal scrim base */
+
+  --nx-border: 38 43 54;
+  --nx-border-strong: 54 61 75;
+
+  /* --- Foreground ramp --- */
+  --nx-fg: 242 244 248;
+  --nx-fg-muted: 154 163 178;
+  --nx-fg-subtle: 107 116 130;
+  --nx-fg-inverse: 12 14 18;
+
+  /* --- Brand accent: "Ember". Warm signal orange, dark text on top.
+         Reserved for primary CTAs, active nav and focus rings so it never
+         competes with the status palette below. --- */
+  --nx-accent: 255 106 61;
+  --nx-accent-hover: 255 128 85;
+  --nx-accent-press: 226 88 47;
+  --nx-accent-fg: 26 10 4;
+  --nx-accent-soft: 63 30 19; /* tinted background for accent chips */
+
+  /* --- Live: broadcast red, only ever used for on-air state --- */
+  --nx-live: 240 51 74;
+  --nx-live-soft: 61 17 24;
+
+  /* --- Content status palette. Always rendered as tinted pills, never as
+         solid fills, so they stay distinct from the Ember CTA. --- */
+  --nx-status-draft: 138 148 166;
+  --nx-status-pending: 229 168 59;
+  --nx-status-published: 52 199 123;
+  --nx-status-scheduled: 56 168 224;
+  --nx-status-restricted: 155 123 240;
+  --nx-status-rejected: 240 82 107;
+  --nx-status-archived: 107 114 128;
+  --nx-status-private: 148 163 184;
+  --nx-status-unlisted: 100 116 139;
+
+  /* --- Semantic feedback --- */
+  --nx-success: 52 199 123;
+  --nx-warning: 229 168 59;
+  --nx-danger: 240 82 107;
+  --nx-info: 56 168 224;
+
+  /* --- Charts: hue-separated, legible on both themes --- */
+  --nx-chart-1: 255 106 61;
+  --nx-chart-2: 56 168 224;
+  --nx-chart-3: 52 199 123;
+  --nx-chart-4: 155 123 240;
+  --nx-chart-5: 229 168 59;
+  --nx-chart-6: 236 106 168;
+
+  /* --- Elevation --- */
+  --nx-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --nx-shadow-md: 0 4px 16px -2px rgb(0 0 0 / 0.5);
+  --nx-shadow-lg: 0 16px 48px -12px rgb(0 0 0 / 0.65);
+
+  /* --- Radii --- */
+  --nx-radius-sm: 0.375rem;
+  --nx-radius: 0.625rem;
+  --nx-radius-lg: 1rem;
+  --nx-radius-full: 9999px;
+
+  /* --- Layout --- */
+  --nx-header-h: 60px;
+  --nx-rail-w: 248px;
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --nx-bg: 248 249 251;
+  --nx-surface: 255 255 255;
+  --nx-surface-2: 246 247 250;
+  --nx-surface-3: 237 240 245;
+  --nx-overlay: 24 27 34;
+
+  --nx-border: 225 229 237;
+  --nx-border-strong: 200 207 219;
+
+  --nx-fg: 18 21 27;
+  --nx-fg-muted: 91 100 115;
+  --nx-fg-subtle: 130 139 154;
+  --nx-fg-inverse: 255 255 255;
+
+  --nx-accent: 226 84 40;
+  --nx-accent-hover: 205 71 30;
+  --nx-accent-press: 178 60 24;
+  --nx-accent-fg: 255 250 248;
+  --nx-accent-soft: 255 232 224;
+
+  --nx-live: 214 33 55;
+  --nx-live-soft: 255 228 232;
+
+  --nx-status-draft: 100 110 128;
+  --nx-status-pending: 176 118 12;
+  --nx-status-published: 18 138 78;
+  --nx-status-scheduled: 20 118 168;
+  --nx-status-restricted: 109 74 195;
+  --nx-status-rejected: 199 42 68;
+  --nx-status-archived: 108 116 130;
+  --nx-status-private: 108 122 143;
+  --nx-status-unlisted: 82 97 118;
+
+  --nx-success: 18 138 78;
+  --nx-warning: 176 118 12;
+  --nx-danger: 199 42 68;
+  --nx-info: 20 118 168;
+
+  --nx-chart-1: 226 84 40;
+  --nx-chart-2: 20 118 168;
+  --nx-chart-3: 18 138 78;
+  --nx-chart-4: 109 74 195;
+  --nx-chart-5: 176 118 12;
+  --nx-chart-6: 196 62 132;
+
+  --nx-shadow-sm: 0 1px 2px 0 rgb(16 20 28 / 0.06);
+  --nx-shadow-md: 0 4px 16px -2px rgb(16 20 28 / 0.1);
+  --nx-shadow-lg: 0 16px 48px -12px rgb(16 20 28 / 0.18);
+}
+
+/* Viewing surfaces stay dark even when the rest of the app is in light mode.
+   A film page in a white chrome is a worse experience than a consistent one. */
+[data-surface="cinema"] {
+  color-scheme: dark;
+
+  --nx-bg: 8 9 11;
+  --nx-surface: 16 18 23;
+  --nx-surface-2: 23 26 33;
+  --nx-surface-3: 31 35 44;
+  --nx-border: 38 43 54;
+  --nx-border-strong: 54 61 75;
+  --nx-fg: 242 244 248;
+  --nx-fg-muted: 154 163 178;
+  --nx-fg-subtle: 107 116 130;
+  --nx-accent: 255 106 61;
+  --nx-accent-hover: 255 128 85;
+  --nx-accent-fg: 26 10 4;
+  --nx-accent-soft: 63 30 19;
+  --nx-live: 240 51 74;
+  --nx-live-soft: 61 17 24;
+}

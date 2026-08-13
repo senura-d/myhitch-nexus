@@ -1,0 +1,768 @@
+"use client";
+
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type UseQueryOptions,
+} from "@tanstack/react-query";
+import * as api from "./index";
+import type {
+  AnalyticsRange,
+  Campaign,
+  Category,
+  LiveEvent,
+  ModerationAction,
+  ModerationItem,
+  Organisation,
+  PlatformConfigTables,
+  SearchFilters,
+  User,
+  VideoDraft,
+} from "./types";
+
+/**
+ * Query keys are namespaced by resource so a mutation can invalidate exactly
+ * what it affects — e.g. actioning a moderation item refreshes the queue, the
+ * audit log and the affected video without touching anything else.
+ */
+export const qk = {
+  featured: ["featured"] as const,
+  search: (filters: SearchFilters) => ["search", filters] as const,
+  video: (id: string) => ["video", id] as const,
+  related: (id: string) => ["related", id] as const,
+  categories: ["categories"] as const,
+  category: (slug: string) => ["category", slug] as const,
+  channel: (id: string) => ["channel", id] as const,
+  channels: ["channels"] as const,
+  channelVideos: (id: string, all?: boolean) => ["channel-videos", id, all] as const,
+  following: ["following"] as const,
+  entitlement: (videoId: string) => ["entitlement", videoId] as const,
+  requestCountry: ["request-country"] as const,
+  comments: (videoId: string) => ["comments", videoId] as const,
+  moderationComments: (channelId: string) => ["moderation-comments", channelId] as const,
+  myRating: (videoId: string) => ["my-rating", videoId] as const,
+  watchlist: ["watchlist"] as const,
+  continueWatching: ["continue-watching"] as const,
+  watchProgress: (videoId: string) => ["watch-progress", videoId] as const,
+  liveEvents: (status?: LiveEvent["status"]) => ["live-events", status] as const,
+  liveEvent: (id: string) => ["live-event", id] as const,
+  channelLive: (id: string) => ["channel-live", id] as const,
+  chat: (id: string) => ["chat", id] as const,
+  polls: (id: string) => ["polls", id] as const,
+  upload: (id: string) => ["upload", id] as const,
+  thumbnails: (id: string) => ["thumbnails", id] as const,
+  bulkImport: ["bulk-import"] as const,
+  playlists: (channelId: string) => ["playlists", channelId] as const,
+  playlist: (id: string) => ["playlist", id] as const,
+  series: (channelId?: string) => ["series", channelId] as const,
+  analytics: (channelId: string, range: AnalyticsRange) =>
+    ["analytics", channelId, range] as const,
+  revenue: (channelId: string) => ["revenue", channelId] as const,
+  campaigns: (advertiserId?: string) => ["campaigns", advertiserId] as const,
+  campaign: (id: string) => ["campaign", id] as const,
+  campaignSeries: (id: string) => ["campaign-series", id] as const,
+  leads: (channelId: string) => ["leads", channelId] as const,
+  productLinks: (channelId: string) => ["product-links", channelId] as const,
+  adminSummary: ["admin-summary"] as const,
+  moderationQueue: (queue?: ModerationItem["queue"]) => ["moderation-queue", queue] as const,
+  auditLog: (filters?: Record<string, unknown>) => ["audit-log", filters] as const,
+  adminUsers: ["admin-users"] as const,
+  organisations: ["organisations"] as const,
+  cases: ["cases"] as const,
+  config: ["platform-config"] as const,
+  user: ["current-user"] as const,
+  purchases: ["purchases"] as const,
+  subscriptions: ["subscriptions"] as const,
+  notifications: ["notifications"] as const,
+};
+
+type Opts<T> = Omit<UseQueryOptions<T, Error, T>, "queryKey" | "queryFn">;
+
+/* ----------------------------- Discovery ------------------------------- */
+
+export const useFeaturedContent = () =>
+  useQuery({ queryKey: qk.featured, queryFn: api.getFeaturedContent });
+
+export const useSearchVideos = (filters: SearchFilters, opts?: Opts<Awaited<ReturnType<typeof api.searchVideos>>>) =>
+  useQuery({
+    queryKey: qk.search(filters),
+    queryFn: () => api.searchVideos(filters),
+    ...opts,
+  });
+
+export const useVideo = (id: string) =>
+  useQuery({ queryKey: qk.video(id), queryFn: () => api.getVideo(id), enabled: Boolean(id) });
+
+export const useRelatedVideos = (id: string) =>
+  useQuery({
+    queryKey: qk.related(id),
+    queryFn: () => api.getRelatedVideos(id),
+    enabled: Boolean(id),
+  });
+
+export const useCategories = () =>
+  useQuery({ queryKey: qk.categories, queryFn: api.getCategories });
+
+export const useCategory = (slug: string) =>
+  useQuery({ queryKey: qk.category(slug), queryFn: () => api.getCategory(slug) });
+
+/* ------------------------------ Channels -------------------------------- */
+
+export const useChannel = (id: string) =>
+  useQuery({ queryKey: qk.channel(id), queryFn: () => api.getChannel(id), enabled: Boolean(id) });
+
+export const useChannels = () =>
+  useQuery({ queryKey: qk.channels, queryFn: api.getChannels });
+
+export const useChannelVideos = (channelId: string, includeUnpublished = false) =>
+  useQuery({
+    queryKey: qk.channelVideos(channelId, includeUnpublished),
+    queryFn: () => api.getChannelVideos(channelId, { includeUnpublished }),
+    enabled: Boolean(channelId),
+  });
+
+export function useToggleFollow() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.toggleFollow,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.following });
+      client.invalidateQueries({ queryKey: qk.featured });
+    },
+  });
+}
+
+export const useIsFollowing = (channelId: string) =>
+  useQuery({
+    queryKey: [...qk.following, channelId],
+    queryFn: () => api.isFollowing(channelId),
+    enabled: Boolean(channelId),
+  });
+
+/* ---------------------------- Entitlement ------------------------------- */
+
+export const useEntitlement = (videoId: string) =>
+  useQuery({
+    queryKey: qk.entitlement(videoId),
+    queryFn: () => api.getEntitlement("usr_viewer", videoId),
+    enabled: Boolean(videoId),
+  });
+
+export const useRequestCountry = () =>
+  useQuery({ queryKey: qk.requestCountry, queryFn: api.getRequestCountry });
+
+export function useSetRequestCountry() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.setRequestCountry,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.requestCountry });
+      client.invalidateQueries({ queryKey: ["entitlement"] });
+    },
+  });
+}
+
+export function usePurchaseAccess(videoId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (kind: "buy" | "rent" | "ppv" | "ticket") =>
+      api.purchaseAccess(videoId, kind),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.entitlement(videoId) });
+      client.invalidateQueries({ queryKey: qk.purchases });
+      client.invalidateQueries({ queryKey: qk.notifications });
+    },
+  });
+}
+
+export function useStartSubscription() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ name, channelId }: { name: string; channelId?: string }) =>
+      api.startSubscription(name, channelId),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.subscriptions });
+      client.invalidateQueries({ queryKey: ["entitlement"] });
+    },
+  });
+}
+
+/* ------------------------------ Playback -------------------------------- */
+
+export const useWatchProgress = (videoId: string) =>
+  useQuery({
+    queryKey: qk.watchProgress(videoId),
+    queryFn: () => api.getWatchProgress(videoId),
+    enabled: Boolean(videoId),
+  });
+
+export const useContinueWatching = () =>
+  useQuery({ queryKey: qk.continueWatching, queryFn: api.getContinueWatching });
+
+export function useSaveWatchProgress() {
+  return useMutation({
+    mutationFn: ({
+      videoId,
+      position,
+      duration,
+    }: {
+      videoId: string;
+      position: number;
+      duration: number;
+    }) => api.saveWatchProgress(videoId, position, duration),
+  });
+}
+
+/* ------------------------------- Social --------------------------------- */
+
+export const useComments = (videoId: string) =>
+  useQuery({
+    queryKey: qk.comments(videoId),
+    queryFn: () => api.getComments(videoId),
+    enabled: Boolean(videoId),
+  });
+
+export function usePostComment(videoId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: string) => api.postComment(videoId, body),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.comments(videoId) }),
+  });
+}
+
+export function useReplyToComment(videoId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ commentId, body }: { commentId: string; body: string }) =>
+      api.replyToComment(commentId, body),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.comments(videoId) }),
+  });
+}
+
+export const useModerationComments = (channelId: string) =>
+  useQuery({
+    queryKey: qk.moderationComments(channelId),
+    queryFn: () => api.getModerationComments(channelId),
+    enabled: Boolean(channelId),
+  });
+
+export function useModerateComment(channelId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      commentId,
+      action,
+    }: {
+      commentId: string;
+      action: "publish" | "hold" | "remove" | "pin" | "heart";
+    }) => api.moderateComment(commentId, action),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.moderationComments(channelId) });
+      client.invalidateQueries({ queryKey: ["comments"] });
+    },
+  });
+}
+
+export const useMyRating = (videoId: string) =>
+  useQuery({
+    queryKey: qk.myRating(videoId),
+    queryFn: () => api.getMyRating(videoId),
+    enabled: Boolean(videoId),
+  });
+
+export function useRateVideo(videoId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (stars: 1 | 2 | 3 | 4 | 5) => api.rateVideo(videoId, stars),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.myRating(videoId) });
+      client.invalidateQueries({ queryKey: qk.video(videoId) });
+    },
+  });
+}
+
+export function useLikeVideo(videoId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.likeVideo(videoId),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.video(videoId) }),
+  });
+}
+
+export const useWatchlist = () =>
+  useQuery({ queryKey: qk.watchlist, queryFn: api.getWatchlist });
+
+export function useToggleWatchlist() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.toggleWatchlist,
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.watchlist }),
+  });
+}
+
+/* -------------------------------- Live ---------------------------------- */
+
+export const useLiveEvents = (status?: LiveEvent["status"]) =>
+  useQuery({ queryKey: qk.liveEvents(status), queryFn: () => api.getLiveEvents(status) });
+
+export const useLiveEvent = (id: string) =>
+  useQuery({ queryKey: qk.liveEvent(id), queryFn: () => api.getLiveEvent(id), enabled: Boolean(id) });
+
+export const useChannelLiveEvents = (channelId: string) =>
+  useQuery({
+    queryKey: qk.channelLive(channelId),
+    queryFn: () => api.getChannelLiveEvents(channelId),
+    enabled: Boolean(channelId),
+  });
+
+export function useCreateLiveEvent() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.createLiveEvent,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["live-events"] });
+      client.invalidateQueries({ queryKey: ["channel-live"] });
+    },
+  });
+}
+
+export function useRegenerateStreamKey() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.regenerateStreamKey,
+    onSuccess: () => client.invalidateQueries({ queryKey: ["live-event"] }),
+  });
+}
+
+export function usePublishReplay() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.publishReplay,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["live-event"] });
+      client.invalidateQueries({ queryKey: ["live-events"] });
+      client.invalidateQueries({ queryKey: ["channel-videos"] });
+      client.invalidateQueries({ queryKey: qk.auditLog() });
+    },
+  });
+}
+
+export function useEndLiveEvent() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.endLiveEvent,
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["live-event"] });
+      client.invalidateQueries({ queryKey: ["live-events"] });
+    },
+  });
+}
+
+export const useChatMessages = (eventId: string) =>
+  useQuery({
+    queryKey: qk.chat(eventId),
+    queryFn: () => api.getChatMessages(eventId),
+    enabled: Boolean(eventId),
+  });
+
+export function useSendChatMessage(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: string) => api.sendChatMessage(eventId, body),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.chat(eventId) }),
+  });
+}
+
+export function useModerateChatMessage(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      messageId,
+      action,
+    }: {
+      messageId: string;
+      action: "hold" | "remove" | "restore";
+    }) => api.moderateChatMessage(messageId, action),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.chat(eventId) }),
+  });
+}
+
+export const usePolls = (eventId: string) =>
+  useQuery({ queryKey: qk.polls(eventId), queryFn: () => api.getPolls(eventId), enabled: Boolean(eventId) });
+
+export function useVotePoll(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ pollId, optionId }: { pollId: string; optionId: string }) =>
+      api.votePoll(pollId, optionId),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.polls(eventId) }),
+  });
+}
+
+/* ------------------------------ Uploads --------------------------------- */
+
+export const useThumbnailSuggestions = (sessionId: string) =>
+  useQuery({
+    queryKey: qk.thumbnails(sessionId),
+    queryFn: () => api.getThumbnailSuggestions(sessionId),
+    enabled: Boolean(sessionId),
+  });
+
+export const useBulkImport = (enabled: boolean) =>
+  useQuery({ queryKey: qk.bulkImport, queryFn: () => api.validateBulkImport(), enabled });
+
+export function usePublishDraft() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (draft: VideoDraft) => api.publishDraft(draft),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["channel-videos"] });
+      client.invalidateQueries({ queryKey: ["moderation-queue"] });
+      client.invalidateQueries({ queryKey: qk.adminSummary });
+      client.invalidateQueries({ queryKey: qk.auditLog() });
+      client.invalidateQueries({ queryKey: ["search"] });
+    },
+  });
+}
+
+export function useUpdateVideoStatus() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ videoId, status }: { videoId: string; status: Parameters<typeof api.updateVideoStatus>[1] }) =>
+      api.updateVideoStatus(videoId, status),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["channel-videos"] });
+      client.invalidateQueries({ queryKey: ["video"] });
+      client.invalidateQueries({ queryKey: qk.auditLog() });
+    },
+  });
+}
+
+/* ---------------------------- Collections ------------------------------- */
+
+export const usePlaylists = (channelId: string) =>
+  useQuery({
+    queryKey: qk.playlists(channelId),
+    queryFn: () => api.getPlaylists(channelId),
+    enabled: Boolean(channelId),
+  });
+
+export const usePlaylist = (id: string) =>
+  useQuery({ queryKey: qk.playlist(id), queryFn: () => api.getPlaylist(id), enabled: Boolean(id) });
+
+export function useCreatePlaylist(channelId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.createPlaylist,
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.playlists(channelId) }),
+  });
+}
+
+export function useUpdatePlaylist(channelId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, patch }: { id: string; patch: Parameters<typeof api.updatePlaylist>[1] }) =>
+      api.updatePlaylist(id, patch),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.playlists(channelId) }),
+  });
+}
+
+export const useSeries = (channelId?: string) =>
+  useQuery({ queryKey: qk.series(channelId), queryFn: () => api.getSeries(channelId) });
+
+/* ----------------------------- Analytics -------------------------------- */
+
+export const useCreatorAnalytics = (channelId: string, range: AnalyticsRange = "28d") =>
+  useQuery({
+    queryKey: qk.analytics(channelId, range),
+    queryFn: () => api.getCreatorAnalytics(channelId, range),
+    enabled: Boolean(channelId),
+  });
+
+export const useRevenueSummary = (channelId: string) =>
+  useQuery({
+    queryKey: qk.revenue(channelId),
+    queryFn: () => api.getRevenueSummary(channelId),
+    enabled: Boolean(channelId),
+  });
+
+export const useCampaignSeries = (campaignId: string) =>
+  useQuery({
+    queryKey: qk.campaignSeries(campaignId),
+    queryFn: () => api.getCampaignSeries(campaignId),
+    enabled: Boolean(campaignId),
+  });
+
+/* ---------------------------- Advertising ------------------------------- */
+
+export const useCampaigns = (advertiserId?: string) =>
+  useQuery({ queryKey: qk.campaigns(advertiserId), queryFn: () => api.getCampaigns(advertiserId) });
+
+export const useCampaign = (id: string) =>
+  useQuery({ queryKey: qk.campaign(id), queryFn: () => api.getCampaign(id), enabled: Boolean(id) });
+
+export function useCreateCampaign() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: Parameters<typeof api.createCampaign>[0]) =>
+      api.createCampaign(payload),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["campaigns"] });
+      client.invalidateQueries({ queryKey: ["moderation-queue"] });
+      client.invalidateQueries({ queryKey: qk.adminSummary });
+      client.invalidateQueries({ queryKey: qk.auditLog() });
+    },
+  });
+}
+
+export function useUpdateCampaignStatus() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status, reason }: { id: string; status: Campaign["status"]; reason?: string }) =>
+      api.updateCampaignStatus(id, status, reason),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["campaigns"] });
+      client.invalidateQueries({ queryKey: ["campaign"] });
+      client.invalidateQueries({ queryKey: qk.auditLog() });
+    },
+  });
+}
+
+export const useLeads = (channelId: string) =>
+  useQuery({ queryKey: qk.leads(channelId), queryFn: () => api.getLeads(channelId), enabled: Boolean(channelId) });
+
+export function useUpdateLeadStatus(channelId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: Parameters<typeof api.updateLeadStatus>[1] }) =>
+      api.updateLeadStatus(id, status),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.leads(channelId) }),
+  });
+}
+
+export const useProductLinks = (channelId: string) =>
+  useQuery({
+    queryKey: qk.productLinks(channelId),
+    queryFn: () => api.getProductLinks(channelId),
+    enabled: Boolean(channelId),
+  });
+
+export function useCreateProductLink(channelId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.createProductLink,
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.productLinks(channelId) }),
+  });
+}
+
+/* -------------------------------- Admin --------------------------------- */
+
+export const useAdminSummary = () =>
+  useQuery({ queryKey: qk.adminSummary, queryFn: api.getAdminSummary });
+
+export const useModerationQueue = (queue?: ModerationItem["queue"]) =>
+  useQuery({ queryKey: qk.moderationQueue(queue), queryFn: () => api.getModerationQueue(queue) });
+
+export function useActionModerationItem() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      itemId,
+      action,
+      reason,
+    }: {
+      itemId: string;
+      action: ModerationAction;
+      reason: string;
+    }) => api.actionModerationItem(itemId, action, reason),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ["moderation-queue"] });
+      client.invalidateQueries({ queryKey: ["audit-log"] });
+      client.invalidateQueries({ queryKey: qk.adminSummary });
+      client.invalidateQueries({ queryKey: ["video"] });
+      client.invalidateQueries({ queryKey: ["campaigns"] });
+      client.invalidateQueries({ queryKey: qk.organisations });
+      client.invalidateQueries({ queryKey: ["channel-videos"] });
+    },
+  });
+}
+
+export const useAuditLog = (filters: Parameters<typeof api.getAuditLog>[0] = {}) =>
+  useQuery({ queryKey: qk.auditLog(filters), queryFn: () => api.getAuditLog(filters) });
+
+export const useAdminUsers = () =>
+  useQuery({ queryKey: qk.adminUsers, queryFn: api.getAdminUsers });
+
+export function useUpdateUserRole() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ userId, roles }: { userId: string; roles: User["roles"] }) =>
+      api.updateUserRole(userId, roles),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.adminUsers });
+      client.invalidateQueries({ queryKey: ["audit-log"] });
+    },
+  });
+}
+
+export function useUpdateUserStatus() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      userId,
+      status,
+      reason,
+    }: {
+      userId: string;
+      status: User["status"];
+      reason: string;
+    }) => api.updateUserStatus(userId, status, reason),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.adminUsers });
+      client.invalidateQueries({ queryKey: ["audit-log"] });
+    },
+  });
+}
+
+export const useOrganisations = () =>
+  useQuery({ queryKey: qk.organisations, queryFn: api.getOrganisations });
+
+export function useUpdateOrganisationStatus() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      orgId,
+      status,
+      reason,
+    }: {
+      orgId: string;
+      status: Organisation["verificationStatus"];
+      reason: string;
+    }) => api.updateOrganisationStatus(orgId, status, reason),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.organisations });
+      client.invalidateQueries({ queryKey: ["audit-log"] });
+      client.invalidateQueries({ queryKey: ["channel"] });
+    },
+  });
+}
+
+export const useCases = () => useQuery({ queryKey: qk.cases, queryFn: api.getCases });
+
+export function useAddCaseNote() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      caseId,
+      body,
+      kind,
+    }: {
+      caseId: string;
+      body: string;
+      kind: "note" | "escalation" | "resolution";
+    }) => api.addCaseNote(caseId, body, kind),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.cases });
+      client.invalidateQueries({ queryKey: ["audit-log"] });
+    },
+  });
+}
+
+export const usePlatformConfig = () =>
+  useQuery({ queryKey: qk.config, queryFn: api.getPlatformConfig });
+
+export function useAddCategory() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: Omit<Category, "id" | "videoCount">) => api.addCategory(payload),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.config });
+      client.invalidateQueries({ queryKey: qk.categories });
+      client.invalidateQueries({ queryKey: ["audit-log"] });
+    },
+  });
+}
+
+/**
+ * React Query cannot carry a generic through `mutationFn`, so the table/rows
+ * pair is widened to a union here and narrowed by the calling screen.
+ */
+type ConfigTableUpdate = {
+  [K in keyof PlatformConfigTables]: { table: K; rows: PlatformConfigTables[K] };
+}[keyof PlatformConfigTables];
+
+export function useUpdateConfigTable() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ table, rows }: ConfigTableUpdate) =>
+      api.updateConfigTable(table, rows as never),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.config });
+      client.invalidateQueries({ queryKey: ["audit-log"] });
+    },
+  });
+}
+
+/* ------------------------------- Account -------------------------------- */
+
+export const useCurrentUser = () =>
+  useQuery({ queryKey: qk.user, queryFn: api.getCurrentUser });
+
+export function useUpdateUser() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (patch: Partial<User>) => api.updateUser(patch),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.user }),
+  });
+}
+
+export function useSwitchProfile() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.switchProfile,
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.user }),
+  });
+}
+
+export const usePurchases = () =>
+  useQuery({ queryKey: qk.purchases, queryFn: api.getPurchases });
+
+export const useSubscriptions = () =>
+  useQuery({ queryKey: qk.subscriptions, queryFn: api.getSubscriptions });
+
+export function useCancelSubscription() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.cancelSubscription,
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.subscriptions }),
+  });
+}
+
+export const useNotifications = () =>
+  useQuery({ queryKey: qk.notifications, queryFn: api.getNotifications });
+
+export function useMarkNotificationsRead() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (id?: string) =>
+      id ? api.markNotificationRead(id) : api.markAllNotificationsRead(),
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.notifications }),
+  });
+}
+
+export function useRegister() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.register,
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.user }),
+  });
+}
+
+export function useVerifyOtp() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.verifyOtp,
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.user }),
+  });
+}
