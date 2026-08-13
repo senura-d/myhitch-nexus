@@ -8,7 +8,6 @@ import {
   IconTrash,
   IconUpload,
   IconVideoOff,
-  IconWorld,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import * as React from "react";

@@ -1,25 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const sans = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap",
-});
-
-const display = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const mono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
-  display: "swap",
-});
+// Font stacks live in tokens.css and resolve locally — see the typography note
+// there for why this build deliberately avoids next/font/google.
 
 export const metadata: Metadata = {
   title: {
@@ -40,12 +24,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html
-      lang="en-GB"
-      data-theme="dark"
-      suppressHydrationWarning
-      className={`${sans.variable} ${display.variable} ${mono.variable}`}
-    >
+    <html lang="en-GB" data-theme="dark" suppressHydrationWarning>
       <body className="min-h-dvh antialiased">
         <a
           href="#main"

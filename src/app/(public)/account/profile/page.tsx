@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   IconCheck,
@@ -24,7 +24,7 @@ import type { AgeRating, ViewerProfile } from "@/lib/mock-api/types";
 import { cn, formatDate } from "@/lib/utils";
 
 const GRADIENTS: Array<[string, string]> = [
-  ["#FF6A3D", "#B5381A"],
+  ["#5B8DEF", "#243F80"],
   ["#38A8E0", "#175E85"],
   ["#34C77B", "#12694A"],
   ["#9B7BF0", "#5B3BB0"],

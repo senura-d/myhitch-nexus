@@ -7,7 +7,7 @@ import { PageBody, PageHeader } from "@/components/layout/workspace-shell";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardBody, Stat } from "@/components/ui/card";
+import { Card, Stat } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Select } from "@/components/ui/field";
 import { Modal } from "@/components/ui/modal";

@@ -15,7 +15,7 @@ export default function AuthLayout({
           className="absolute inset-0"
           style={{
             backgroundImage:
-              "linear-gradient(150deg, #2A1B4D 0%, #0E1424 45%, #4A2418 100%)",
+              "linear-gradient(150deg, #16326B 0%, #0B1220 48%, #124C6B 100%)",
           }}
         />
         <svg

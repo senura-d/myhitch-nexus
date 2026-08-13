@@ -203,8 +203,11 @@ export const videos: Video[] = [
     ratingAverage: 4.3,
     completionRate: 66,
     watermarkEnabled: true,
+    // Deliberately NOT included with Premium, and the seeded rental for it has
+    // expired — this is the one title that reliably demonstrates the paywall
+    // and preview-limit states for the signed-in user.
     pricing: {
-      accessModels: ["rent", "buy", "subscription"],
+      accessModels: ["rent", "buy"],
       rentPrice: { amount: 399, currency: "GBP" },
       buyPrice: { amount: 999, currency: "GBP" },
       rentalWindowHours: 48,

@@ -205,7 +205,7 @@ export const chatMessages: ChatMessage[] = [
     id: "chat_03",
     liveEventId: "live_council_planning",
     authorName: "ModeratorK",
-    authorGradient: ["#FF6A3D", "#B5381A"],
+    authorGradient: ["#5B8DEF", "#243F80"],
     body: "Fixed — the papers link has been corrected in the description.",
     sentAt: hoursAgo(1),
     role: "moderator",

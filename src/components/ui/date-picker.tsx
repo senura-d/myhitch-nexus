@@ -54,6 +54,7 @@ export function DatePicker({
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const popupId = React.useId();
 
   const selected = React.useMemo(() => {
     if (!value) return null;
@@ -107,7 +108,11 @@ export function DatePicker({
         type="button"
         disabled={disabled}
         onClick={() => setOpen((current) => !current)}
+        // A control that opens a popup to pick a value is a combobox, not a
+        // plain button — and only combobox supports aria-invalid.
+        role="combobox"
         aria-haspopup="dialog"
+        aria-controls={popupId}
         aria-expanded={open}
         aria-invalid={invalid || undefined}
         className={cn(
@@ -127,6 +132,7 @@ export function DatePicker({
 
       {open ? (
         <div
+          id={popupId}
           role="dialog"
           aria-label="Choose a date"
           className="absolute left-0 z-40 mt-2 w-[19rem] rounded-lg border border-border bg-surface-2 p-3 shadow-lg animate-scale-in"

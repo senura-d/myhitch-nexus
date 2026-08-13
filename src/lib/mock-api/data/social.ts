@@ -47,7 +47,7 @@ export const comments: Comment[] = [
         "marasolace",
         "Same lighting, same distance, same operator. It would be a pointless test otherwise.",
         hoursAgo(28),
-        ["#FF6A3D", "#B5381A"],
+        ["#5B8DEF", "#243F80"],
         { likes: 412, heartedByCreator: true },
       ),
       reply(

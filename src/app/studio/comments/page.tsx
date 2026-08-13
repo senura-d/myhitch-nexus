@@ -24,7 +24,7 @@ import {
   useModerateComment,
   useModerationComments,
 } from "@/lib/mock-api/hooks";
-import { cn, relativeTime } from "@/lib/utils";
+import { relativeTime } from "@/lib/utils";
 
 const DEFAULT_BLOCKED = ["scam", "free money", "click here", "crypto giveaway"];
 

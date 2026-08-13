@@ -144,7 +144,6 @@ export function VideoPlayer({
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [started, controls]);
 
   /* ------------------------- Auto-hide the chrome ------------------------ */
@@ -401,9 +400,9 @@ export function VideoPlayer({
             <IconLock className="size-6" />
           </span>
           <div>
-            <p className="font-display text-lg font-semibold text-white">
+            <h2 className="font-display text-lg font-semibold text-white">
               That is the end of the preview
-            </p>
+            </h2>
             <p className="mt-1 max-w-md text-sm text-white/70">
               You watched {formatDuration(previewLimit ?? 120)} of{" "}
               {formatDuration(video.durationSeconds)}. Unlock the full title to keep
@@ -531,7 +530,10 @@ function BlockedSurface({
           {icon}
         </span>
         <div>
-          <p className="font-display text-lg font-semibold text-fg">{title}</p>
+          {/* A heading, not a styled paragraph: this surface replaces the
+              player entirely, so it needs to be reachable by screen-reader
+              heading navigation. */}
+          <h2 className="font-display text-lg font-semibold text-fg">{title}</h2>
           <p className="mx-auto mt-1.5 max-w-md text-sm leading-relaxed text-fg-muted">
             {description}
           </p>
@@ -578,9 +580,9 @@ function PaywallSurface({
           <IconLock className="size-5" />
         </span>
         <div>
-          <p className="font-display text-lg font-semibold text-fg sm:text-xl">
+          <h2 className="font-display text-lg font-semibold text-fg sm:text-xl">
             Unlock to watch in full
-          </p>
+          </h2>
           <p className="mx-auto mt-1.5 max-w-md text-sm leading-relaxed text-fg-muted">
             {entitlement.previewSeconds
               ? `A ${formatDuration(entitlement.previewSeconds)} preview is available before you decide.`

@@ -52,10 +52,8 @@ export default function StudioDashboardPage() {
 
   const drafts = videos.filter((video) => video.status === "draft");
   const pending = videos.filter((video) => video.status === "pending");
-  const scheduled = videos.filter((video) => video.status === "scheduled");
   const held = comments.filter((comment) => comment.status === "held");
   const liveNow = liveEvents.find((event) => event.status === "live");
-  const nextLive = liveEvents.find((event) => event.status === "upcoming");
 
   return (
     <>

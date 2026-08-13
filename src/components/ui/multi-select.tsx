@@ -46,6 +46,7 @@ export function MultiSelect({
   const [open, setOpen] = React.useState(false);
   const [query, setQuery] = React.useState("");
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const listboxId = React.useId();
 
   React.useEffect(() => {
     if (!open) return;
@@ -106,7 +107,11 @@ export function MultiSelect({
         type="button"
         disabled={disabled}
         onClick={() => setOpen((current) => !current)}
+        // Same reasoning as DatePicker: this is a combobox that owns a
+        // listbox popup, which is the role that supports aria-invalid.
+        role="combobox"
         aria-haspopup="listbox"
+        aria-controls={listboxId}
         aria-expanded={open}
         aria-invalid={invalid || undefined}
         className={cn(
@@ -165,7 +170,12 @@ export function MultiSelect({
             </div>
           </div>
 
-          <ul role="listbox" aria-multiselectable className="nx-scrollbar max-h-64 overflow-y-auto p-1">
+          <ul
+            id={listboxId}
+            role="listbox"
+            aria-multiselectable
+            className="nx-scrollbar max-h-64 overflow-y-auto p-1"
+          >
             {filtered.length === 0 ? (
               <li className="px-3 py-6 text-center text-sm text-fg-subtle">
                 {emptyLabel}

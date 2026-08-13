@@ -36,6 +36,7 @@ import { VideoCard } from "@/components/video/video-card";
 import { CONTENT_TYPE_LABELS, categoryById } from "@/lib/mock-api/data/categories";
 import {
   useComments,
+  useCurrentUser,
   useEntitlement,
   useIsFollowing,
   useLikeVideo,
@@ -70,6 +71,7 @@ export function VideoDetailClient() {
   const { toast } = useToast();
 
   const { data: video, isLoading } = useVideo(id);
+  const { data: currentUser } = useCurrentUser();
   const { data: entitlement } = useEntitlement(id);
   const { data: channel } = useChannel(video?.channelId ?? "");
   const { data: related = [] } = useRelatedVideos(id);
@@ -418,7 +420,11 @@ export function VideoDetailClient() {
               {tab === "comments" ? (
                 <div>
                   <div className="flex gap-3">
-                    <Avatar name="Mara Solace" gradient={["#FF6A3D", "#B5381A"]} size="md" />
+                    <Avatar
+                      name={currentUser?.name ?? "You"}
+                      gradient={currentUser?.avatarGradient}
+                      size="md"
+                    />
                     <div className="min-w-0 flex-1">
                       <Textarea
                         value={commentBody}

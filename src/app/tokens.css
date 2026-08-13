@@ -7,6 +7,13 @@
    Dark is the default (`:root`) because the viewing surfaces — player, video
    pages, live — are the heart of the product. Light is an opt-in theme applied
    via [data-theme="light"] on <html>, used mostly for studio/admin dashboards.
+
+   Hue budget
+   ----------
+   The accent is azure blue and owns every primary action. To stop the rest of
+   the palette competing with it, the informational hues sit in cyan (greener
+   than the accent) and the scheduled state uses cyan rather than the sky blue
+   it would naturally take. Broadcast red is reserved exclusively for live.
    ========================================================================= */
 
 :root {
@@ -28,44 +35,45 @@
   --nx-fg-subtle: 107 116 130;
   --nx-fg-inverse: 12 14 18;
 
-  /* --- Brand accent: "Ember". Warm signal orange, dark text on top.
-         Reserved for primary CTAs, active nav and focus rings so it never
-         competes with the status palette below. --- */
-  --nx-accent: 255 106 61;
-  --nx-accent-hover: 255 128 85;
-  --nx-accent-press: 226 88 47;
-  --nx-accent-fg: 26 10 4;
-  --nx-accent-soft: 63 30 19; /* tinted background for accent chips */
+  /* --- Brand accent: "Signal". Luminous azure, near-black text on top
+         (6.9:1 against --nx-accent-fg). Reserved for primary CTAs, active nav
+         and focus rings so it never competes with the status palette. --- */
+  --nx-accent: 77 163 255;
+  --nx-accent-hover: 109 180 255;
+  --nx-accent-press: 59 140 224;
+  --nx-accent-fg: 6 18 31;
+  --nx-accent-soft: 16 40 63; /* tinted background for accent chips */
 
   /* --- Live: broadcast red, only ever used for on-air state --- */
   --nx-live: 240 51 74;
   --nx-live-soft: 61 17 24;
 
   /* --- Content status palette. Always rendered as tinted pills, never as
-         solid fills, so they stay distinct from the Ember CTA. --- */
+         solid fills, so they stay distinct from the accent CTA. --- */
   --nx-status-draft: 138 148 166;
-  --nx-status-pending: 229 168 59;
-  --nx-status-published: 52 199 123;
-  --nx-status-scheduled: 56 168 224;
-  --nx-status-restricted: 155 123 240;
-  --nx-status-rejected: 240 82 107;
+  --nx-status-pending: 232 163 61;
+  --nx-status-published: 53 199 123;
+  --nx-status-scheduled: 34 201 214; /* cyan, not sky — see hue budget */
+  --nx-status-restricted: 167 128 245;
+  --nx-status-rejected: 242 85 116;
   --nx-status-archived: 107 114 128;
   --nx-status-private: 148 163 184;
   --nx-status-unlisted: 100 116 139;
 
   /* --- Semantic feedback --- */
-  --nx-success: 52 199 123;
-  --nx-warning: 229 168 59;
-  --nx-danger: 240 82 107;
-  --nx-info: 56 168 224;
+  --nx-success: 53 199 123;
+  --nx-warning: 232 163 61;
+  --nx-danger: 242 85 116;
+  --nx-info: 34 201 214;
 
-  /* --- Charts: hue-separated, legible on both themes --- */
-  --nx-chart-1: 255 106 61;
-  --nx-chart-2: 56 168 224;
-  --nx-chart-3: 52 199 123;
-  --nx-chart-4: 155 123 240;
-  --nx-chart-5: 229 168 59;
-  --nx-chart-6: 236 106 168;
+  /* --- Charts: hue-separated, legible on both themes. Series 1 is the
+         accent so the primary metric always reads as "ours". --- */
+  --nx-chart-1: 77 163 255;
+  --nx-chart-2: 53 199 123;
+  --nx-chart-3: 167 128 245;
+  --nx-chart-4: 232 163 61;
+  --nx-chart-5: 34 201 214;
+  --nx-chart-6: 242 112 156;
 
   /* --- Elevation --- */
   --nx-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
@@ -81,6 +89,22 @@
   /* --- Layout --- */
   --nx-header-h: 60px;
   --nx-rail-w: 248px;
+
+  /* --- Typography ------------------------------------------------------
+     Deliberately network-free. `next/font/google` needs to reach Google at
+     build time, which makes builds fail-slow behind a firewall and in CI.
+     These stacks resolve locally on every target platform, so the first
+     paint is never blocked and the build has no external dependency.
+
+     Character comes from the treatment rather than a bought typeface:
+     display headings run tight (-0.02em) at semibold, body stays neutral,
+     and numerals are tabular wherever they are compared.               --- */
+  --font-sans: "Inter", "Segoe UI Variable Text", "Segoe UI", system-ui,
+    -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Inter Display", "Inter", "Segoe UI Variable Display",
+    "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "SF Mono", "JetBrains Mono",
+    Consolas, "Liberation Mono", monospace;
 }
 
 [data-theme="light"] {
@@ -100,11 +124,13 @@
   --nx-fg-subtle: 130 139 154;
   --nx-fg-inverse: 255 255 255;
 
-  --nx-accent: 226 84 40;
-  --nx-accent-hover: 205 71 30;
-  --nx-accent-press: 178 60 24;
-  --nx-accent-fg: 255 250 248;
-  --nx-accent-soft: 255 232 224;
+  /* Light mode flips the accent relationship: a deeper blue carrying white
+     text (5.8:1), because a luminous azure on white would not hold contrast. */
+  --nx-accent: 22 104 216;
+  --nx-accent-hover: 18 89 190;
+  --nx-accent-press: 14 74 158;
+  --nx-accent-fg: 255 255 255;
+  --nx-accent-soft: 227 239 255;
 
   --nx-live: 214 33 55;
   --nx-live-soft: 255 228 232;
@@ -112,7 +138,7 @@
   --nx-status-draft: 100 110 128;
   --nx-status-pending: 176 118 12;
   --nx-status-published: 18 138 78;
-  --nx-status-scheduled: 20 118 168;
+  --nx-status-scheduled: 12 132 142;
   --nx-status-restricted: 109 74 195;
   --nx-status-rejected: 199 42 68;
   --nx-status-archived: 108 116 130;
@@ -122,13 +148,13 @@
   --nx-success: 18 138 78;
   --nx-warning: 176 118 12;
   --nx-danger: 199 42 68;
-  --nx-info: 20 118 168;
+  --nx-info: 12 132 142;
 
-  --nx-chart-1: 226 84 40;
-  --nx-chart-2: 20 118 168;
-  --nx-chart-3: 18 138 78;
-  --nx-chart-4: 109 74 195;
-  --nx-chart-5: 176 118 12;
+  --nx-chart-1: 22 104 216;
+  --nx-chart-2: 18 138 78;
+  --nx-chart-3: 109 74 195;
+  --nx-chart-4: 176 118 12;
+  --nx-chart-5: 12 132 142;
   --nx-chart-6: 196 62 132;
 
   --nx-shadow-sm: 0 1px 2px 0 rgb(16 20 28 / 0.06);
@@ -150,10 +176,10 @@
   --nx-fg: 242 244 248;
   --nx-fg-muted: 154 163 178;
   --nx-fg-subtle: 107 116 130;
-  --nx-accent: 255 106 61;
-  --nx-accent-hover: 255 128 85;
-  --nx-accent-fg: 26 10 4;
-  --nx-accent-soft: 63 30 19;
+  --nx-accent: 77 163 255;
+  --nx-accent-hover: 109 180 255;
+  --nx-accent-fg: 6 18 31;
+  --nx-accent-soft: 16 40 63;
   --nx-live: 240 51 74;
   --nx-live-soft: 61 17 24;
 }

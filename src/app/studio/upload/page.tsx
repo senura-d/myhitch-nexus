@@ -14,7 +14,7 @@ import {
 import { useRouter } from "next/navigation";
 import * as React from "react";
 import { PageBody, PageHeader } from "@/components/layout/workspace-shell";
-import { Badge, StatusBadge } from "@/components/ui/badge";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { DataTable, type Column } from "@/components/ui/data-table";
@@ -102,7 +102,6 @@ export default function UploadPage() {
 
   /* ----------------------------- Step 1: upload ---------------------------- */
   const [session, setSession] = React.useState<UploadSession | null>(null);
-  const [file, setFile] = React.useState<{ name: string; size: number } | null>(null);
   const [dragging, setDragging] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -132,7 +131,8 @@ export default function UploadPage() {
   }, [session?.phase, session?.id]);
 
   const startUpload = async (picked: { name: string; size: number }) => {
-    setFile(picked);
+    // The session carries the file name and size, so nothing else needs to
+    // hold the File object — and it never leaves the page.
     const created = await api.createUploadSession(picked.name, picked.size);
     setSession(created);
   };
@@ -358,10 +358,7 @@ export default function UploadPage() {
                         session={session}
                         onPause={async () => setSession(await api.pauseUpload(session.id))}
                         onResume={async () => setSession(await api.resumeUpload(session.id))}
-                        onCancel={() => {
-                          setSession(null);
-                          setFile(null);
-                        }}
+                        onCancel={() => setSession(null)}
                       />
                     ) : (
                       <div
@@ -468,8 +465,9 @@ export default function UploadPage() {
                             ))}
                           </Select>
                         </Field>
-                        <Field label="Categories" required>
+                        <Field label="Categories" htmlFor="up-categories" required>
                           <MultiSelect
+                            id="up-categories"
                             options={categories.map((category) => ({
                               value: category.id,
                               label: category.name,

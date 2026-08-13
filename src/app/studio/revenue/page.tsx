@@ -18,7 +18,7 @@ import { useToast } from "@/components/ui/toast";
 import { CHART_COLORS, chartTooltip } from "@/components/charts/chart-theme";
 import { useCurrentUser, useRevenueSummary } from "@/lib/mock-api/hooks";
 import type { RevenueSummary } from "@/lib/mock-api/types";
-import { compactNumber, formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 type Txn = RevenueSummary["transactions"][number];
 
