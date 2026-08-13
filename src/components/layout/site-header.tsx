@@ -7,6 +7,7 @@ import {
   IconBuildingStore,
   IconChevronDown,
   IconHistory,
+  IconHome,
   IconLayoutGrid,
   IconLogout,
   IconMenu2,
@@ -35,7 +36,13 @@ import {
 import { cn, relativeTime } from "@/lib/utils";
 import { NexusMark } from "./logo";
 
-const PRIMARY_NAV = [
+const PRIMARY_NAV: Array<{
+  href: string;
+  label: string;
+  /** Home matches "/" only — prefix matching would light it on every route. */
+  exact?: boolean;
+}> = [
+  { href: "/", label: "Home", exact: true },
   { href: "/films", label: "Films" },
   { href: "/commercial", label: "Commercial" },
   { href: "/live", label: "Live" },
@@ -44,6 +51,9 @@ const PRIMARY_NAV = [
   { href: "/entertainment", label: "Entertainment" },
   { href: "/explore", label: "Categories" },
 ];
+
+const isNavActive = (pathname: string, item: (typeof PRIMARY_NAV)[number]) =>
+  item.exact ? pathname === item.href : pathname.startsWith(item.href);
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -96,7 +106,7 @@ export function SiteHeader() {
 
         <nav aria-label="Primary" className="ml-2 hidden items-center gap-0.5 lg:flex">
           {PRIMARY_NAV.map((item) => {
-            const active = pathname.startsWith(item.href);
+            const active = isNavActive(pathname, item);
             return (
               <Link
                 key={item.href}
@@ -327,15 +337,25 @@ export function SiteHeader() {
           className="border-t border-border bg-surface px-3 py-2 lg:hidden"
         >
           <div className="grid grid-cols-2 gap-1 sm:grid-cols-3">
-            {PRIMARY_NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded px-3 py-2 text-sm font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {PRIMARY_NAV.map((item) => {
+              const active = isNavActive(pathname, item);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-2 rounded px-3 py-2 text-sm font-medium transition-colors [&_svg]:size-4",
+                    active
+                      ? "bg-surface-2 text-fg"
+                      : "text-fg-muted hover:bg-surface-2 hover:text-fg",
+                  )}
+                >
+                  {item.exact ? <IconHome /> : null}
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
           <div className="mt-2 flex gap-2 border-t border-border pt-2">
             <Button variant="primary" size="sm" href="/studio/upload" block>

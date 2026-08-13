@@ -116,6 +116,25 @@ const config: Config = {
         shimmer: {
           "100%": { transform: "translateX(100%)" },
         },
+        // Boot splash / loading: the three logo nodes light in sequence, and
+        // an indeterminate bar sweeps beneath them.
+        "node-pulse": {
+          "0%, 70%, 100%": { opacity: "0.25", transform: "scale(0.82)" },
+          "35%": { opacity: "1", transform: "scale(1)" },
+        },
+        "bar-sweep": {
+          "0%": { transform: "translateX(-100%) scaleX(0.4)" },
+          "50%": { transform: "translateX(0%) scaleX(0.7)" },
+          "100%": { transform: "translateX(100%) scaleX(0.4)" },
+        },
+        "splash-out": {
+          "0%": { opacity: "1", visibility: "visible" },
+          "100%": { opacity: "0", visibility: "hidden" },
+        },
+        "ring-spin": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
         "toast-in": {
           from: { opacity: "0", transform: "translateX(16px) scale(0.98)" },
           to: { opacity: "1", transform: "translateX(0) scale(1)" },
@@ -129,6 +148,9 @@ const config: Config = {
         "live-pulse": "live-pulse 1.6s ease-in-out infinite",
         shimmer: "shimmer 1.6s infinite",
         "toast-in": "toast-in 200ms cubic-bezier(0.22, 1, 0.36, 1)",
+        "node-pulse": "node-pulse 1.5s ease-in-out infinite",
+        "bar-sweep": "bar-sweep 1.4s cubic-bezier(0.65, 0, 0.35, 1) infinite",
+        "ring-spin": "ring-spin 1.1s linear infinite",
       },
     },
   },

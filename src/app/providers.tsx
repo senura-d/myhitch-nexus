@@ -2,6 +2,8 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as React from "react";
+import { BootSplash } from "@/components/layout/boot-splash";
+import { NetworkStatus } from "@/components/layout/network-status";
 import { ToastProvider } from "@/components/ui/toast";
 
 type Theme = "dark" | "light";
@@ -65,7 +67,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={client}>
       <ThemeProvider>
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          {/* NetworkStatus sits inside the query provider so a reconnect can
+              refetch, and outside the page so it can replace it when offline. */}
+          <NetworkStatus>{children}</NetworkStatus>
+          <BootSplash />
+        </ToastProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
