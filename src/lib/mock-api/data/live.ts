@@ -1,7 +1,7 @@
 import type { ChatMessage, LiveEvent, Poll } from "../types";
 import { daysAgo, daysAhead, hoursAgo, hoursAhead } from "./videos";
 
-export const liveEvents: LiveEvent[] = [
+const rawLiveEvents: LiveEvent[] = [
   {
     id: "live_council_planning",
     channelId: "ch_council",
@@ -15,6 +15,7 @@ export const liveEvents: LiveEvent[] = [
     endedAt: null,
     timezone: "Europe/London",
     posterGradient: ["#1E3350", "#080E16"],
+    thumbnailUrl: "/images/live/live_council_planning.svg",
     viewerCount: 1_284,
     peakViewers: 1_612,
     streamKey: "nx_live_9f2c-7a41-be03-4d18",
@@ -37,6 +38,7 @@ export const liveEvents: LiveEvent[] = [
     endedAt: null,
     timezone: "America/New_York",
     posterGradient: ["#3E1638", "#120610"],
+    thumbnailUrl: "/images/live/live_orbit_session.svg",
     viewerCount: 18_940,
     peakViewers: 21_306,
     streamKey: "nx_live_4b81-2ce9-1f70-a562",
@@ -59,6 +61,7 @@ export const liveEvents: LiveEvent[] = [
     endedAt: null,
     timezone: "Europe/Berlin",
     posterGradient: ["#0E4C5E", "#04141B"],
+    thumbnailUrl: "/images/live/live_helio_keynote.svg",
     viewerCount: 0,
     peakViewers: 0,
     streamKey: "nx_live_c07d-5e16-9ab2-3f44",
@@ -81,6 +84,7 @@ export const liveEvents: LiveEvent[] = [
     endedAt: null,
     timezone: "Europe/London",
     posterGradient: ["#2E5B4A", "#0A1712"],
+    thumbnailUrl: "/images/live/live_northlight_premiere.svg",
     viewerCount: 0,
     peakViewers: 0,
     price: { amount: 1_200, currency: "GBP" },
@@ -104,6 +108,7 @@ export const liveEvents: LiveEvent[] = [
     endedAt: null,
     timezone: "Europe/London",
     posterGradient: ["#123A2E", "#05120E"],
+    thumbnailUrl: "/images/live/live_meridian_openday.svg",
     viewerCount: 0,
     peakViewers: 0,
     streamKey: "nx_live_31de-6f80-c4a7-15b9",
@@ -126,6 +131,7 @@ export const liveEvents: LiveEvent[] = [
     endedAt: daysAgo(20),
     timezone: "Europe/London",
     posterGradient: ["#123049", "#050E16"],
+    thumbnailUrl: "/images/live/live_ledger_briefing.svg",
     viewerCount: 0,
     peakViewers: 42_800,
     streamKey: "nx_live_7c22-9b04-ea31-6d57",
@@ -148,6 +154,7 @@ export const liveEvents: LiveEvent[] = [
     endedAt: daysAgo(5),
     timezone: "Europe/London",
     posterGradient: ["#0C4A44", "#041615"],
+    thumbnailUrl: "/images/live/live_tideline_appeal.svg",
     viewerCount: 0,
     peakViewers: 9_640,
     streamKey: "nx_live_5a90-3d17-8fb6-c204",
@@ -169,6 +176,7 @@ export const liveEvents: LiveEvent[] = [
     endedAt: null,
     timezone: "Asia/Colombo",
     posterGradient: ["#4A3618", "#150F06"],
+    thumbnailUrl: "/images/live/live_asha_qa.svg",
     viewerCount: 0,
     peakViewers: 0,
     streamKey: "nx_live_e413-77cd-2a58-b061",
@@ -179,6 +187,8 @@ export const liveEvents: LiveEvent[] = [
     categoryIds: ["cat_creators"],
   },
 ];
+
+export const liveEvents: LiveEvent[] = rawLiveEvents;
 
 export const chatMessages: ChatMessage[] = [
   {

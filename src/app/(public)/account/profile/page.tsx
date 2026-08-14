@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   IconCheck,
@@ -37,6 +37,8 @@ export default function ProfilePage() {
   const updateUser = useUpdateUser();
   const switchProfile = useSwitchProfile();
   const { toast } = useToast();
+
+  const avatarInputRef = React.useRef<HTMLInputElement>(null);
 
   const [addOpen, setAddOpen] = React.useState(false);
   const [newName, setNewName] = React.useState("");
@@ -112,6 +114,7 @@ export default function ProfilePage() {
                   <Avatar
                     name={profile.name}
                     gradient={profile.avatarGradient}
+                    src={profile.avatarUrl}
                     size="xl"
                     square
                   />
@@ -158,13 +161,39 @@ export default function ProfilePage() {
         />
         <CardBody className="space-y-4">
           <div className="flex flex-wrap items-center gap-4">
-            <Avatar name={user.name} gradient={user.avatarGradient} size="xl" />
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (!file) return;
+                updateUser.mutate(
+                  { avatarUrl: URL.createObjectURL(file) },
+                  { onSuccess: () => toast({ title: "Avatar updated" }) },
+                );
+                event.target.value = "";
+              }}
+            />
+            <Avatar
+              name={user.name}
+              gradient={user.avatarGradient}
+              src={user.avatarUrl}
+              size="xl"
+            />
             <div>
               <p className="text-sm font-medium text-fg">Account avatar</p>
               <p className="mt-0.5 text-xs text-fg-muted">
-                Generated from your name. Image upload is out of scope in this build.
+                Shown on your comments and channel.
               </p>
-              <Button variant="secondary" size="sm" className="mt-2" disabled>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="mt-2"
+                loading={updateUser.isPending}
+                onClick={() => avatarInputRef.current?.click()}
+              >
                 <IconPencil />
                 Change
               </Button>

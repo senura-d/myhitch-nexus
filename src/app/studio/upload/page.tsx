@@ -156,6 +156,7 @@ export default function UploadPage() {
   );
   const [thumbnailId, setThumbnailId] = React.useState<string | null>(null);
   const [customThumb, setCustomThumb] = React.useState<string | null>(null);
+  const [customThumbUrl, setCustomThumbUrl] = React.useState<string | null>(null);
 
   /* --------------------------- Step 4: captions ---------------------------- */
   const [subtitles, setSubtitles] = React.useState<SubtitleTrack[]>([]);
@@ -640,6 +641,7 @@ export default function UploadPage() {
                               const picked = event.target.files?.[0];
                               if (picked) {
                                 setCustomThumb(picked.name);
+                                setCustomThumbUrl(URL.createObjectURL(picked));
                                 setThumbnailId(null);
                               }
                             }}
@@ -647,10 +649,26 @@ export default function UploadPage() {
                           />
                         </Field>
                         {customThumb ? (
-                          <Badge tone="published" size="sm" className="mt-2">
-                            <IconCheck />
-                            {customThumb}
-                          </Badge>
+                          <div className="mt-3 flex items-center gap-3">
+                            {customThumbUrl ? (
+                              <div className="relative h-16 w-28 shrink-0 overflow-hidden rounded border border-border">
+                                <img
+                                  src={customThumbUrl}
+                                  alt="Custom thumbnail preview"
+                                  className="size-full object-cover"
+                                />
+                              </div>
+                            ) : null}
+                            <div>
+                              <Badge tone="published" size="sm">
+                                <IconCheck />
+                                {customThumb}
+                              </Badge>
+                              <p className="mt-1 text-xs text-fg-subtle">
+                                Selected as active video thumbnail
+                              </p>
+                            </div>
+                          </div>
                         ) : null}
                       </div>
                     </>

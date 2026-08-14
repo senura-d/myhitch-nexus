@@ -20,7 +20,7 @@ import {
   IconWorld,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import * as React from "react";
 import { VideoPlayer } from "@/components/player/video-player";
 import { Avatar } from "@/components/ui/avatar";
@@ -89,6 +89,14 @@ export function VideoDetailClient() {
   const replyToComment = useReplyToComment(id);
   const purchase = usePurchaseAccess(id);
   const startSubscription = useStartSubscription();
+  const router = useRouter();
+
+  // Redirect guests to the login page — video content requires sign-in.
+  React.useEffect(() => {
+    if (!isLoading && currentUser === null) {
+      router.replace("/auth/login");
+    }
+  }, [isLoading, currentUser, router]);
 
   const [purchaseOpen, setPurchaseOpen] = React.useState(false);
   const [shareOpen, setShareOpen] = React.useState(false);
@@ -287,6 +295,7 @@ export function VideoDetailClient() {
                       <Avatar
                         name={channel.name}
                         gradient={channel.avatarGradient}
+                        src={channel.avatarUrl}
                         size="lg"
                         verified={channel.verified}
                       />
@@ -390,8 +399,10 @@ export function VideoDetailClient() {
                               {link.productName}
                             </span>
                             <span className="block text-xs text-fg-subtle nx-tnum">
-                              {formatCurrency(link.price.amount, link.price.currency)} ·
-                              at {formatDuration(link.timestampSeconds)}
+                              {formatCurrency(link.price.amount, link.price.currency)}
+                              {link.timestampSeconds != null
+                                ? ` · at ${formatDuration(link.timestampSeconds)}`
+                                : ""}
                             </span>
                           </span>
                         </button>
@@ -423,6 +434,7 @@ export function VideoDetailClient() {
                     <Avatar
                       name={currentUser?.name ?? "You"}
                       gradient={currentUser?.avatarGradient}
+                      src={currentUser?.avatarUrl}
                       size="md"
                     />
                     <div className="min-w-0 flex-1">

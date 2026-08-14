@@ -4,9 +4,11 @@
    Values are stored as space-separated RGB channels so Tailwind can apply
    opacity modifiers:  rgb(var(--nx-bg) / <alpha-value>)  ->  bg-bg/60
 
-   Dark is the default (`:root`) because the viewing surfaces — player, video
-   pages, live — are the heart of the product. Light is an opt-in theme applied
-   via [data-theme="light"] on <html>, used mostly for studio/admin dashboards.
+   Light is the default theme, applied via [data-theme="light"] on <html>.
+   Dark (`:root`) remains available as an opt-in switch from the header toggle,
+   and viewing surfaces — player, video pages, live — stay dark regardless via
+   [data-surface="cinema"], since that's where the product spends most of its
+   screen time.
 
    Hue budget
    ----------

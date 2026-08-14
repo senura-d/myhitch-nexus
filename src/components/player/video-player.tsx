@@ -238,6 +238,7 @@ export function VideoPlayer({
   const activeSubtitle = video.subtitles.find((track) => track.id === subtitle);
   const activeCommerce = video.pricing.affiliateLinks?.find(
     (link) =>
+      link.timestampSeconds != null &&
       state.currentTime >= link.timestampSeconds &&
       state.currentTime < link.timestampSeconds + 25,
   );
@@ -257,6 +258,8 @@ export function VideoPlayer({
     >
       {/* Poster stands in whenever no real media is decoded. */}
       <Poster
+        src={video.thumbnailUrl}
+        alt={video.title}
         gradient={video.posterGradient}
         seed={video.id}
         ratio="none"
@@ -484,7 +487,7 @@ export function VideoPlayer({
 
       {pip ? (
         <div className="pointer-events-none absolute bottom-24 right-3 w-40 overflow-hidden rounded border border-white/20 shadow-lg">
-          <Poster gradient={video.posterGradient} seed={`${video.id}-pip`} ratio="video" />
+          <Poster src={video.thumbnailUrl} alt={video.title} gradient={video.posterGradient} seed={`${video.id}-pip`} ratio="video" />
           <span className="absolute inset-x-0 bottom-0 bg-black/70 px-2 py-1 text-2xs text-white/80">
             Picture in picture (UI only)
           </span>
@@ -520,6 +523,8 @@ function BlockedSurface({
       )}
     >
       <Poster
+        src={video.thumbnailUrl}
+        alt={video.title}
         gradient={video.posterGradient}
         seed={video.id}
         ratio="none"
@@ -569,6 +574,8 @@ function PaywallSurface({
       )}
     >
       <Poster
+        src={video.thumbnailUrl}
+        alt={video.title}
         gradient={video.posterGradient}
         seed={video.id}
         ratio="none"

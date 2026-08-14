@@ -127,11 +127,7 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="mt-6 rounded border border-border bg-surface-2 px-3.5 py-3 text-xs leading-relaxed text-fg-subtle">
-        <strong className="text-fg-muted">Prototype note.</strong> Any email and an
-        8-character password will sign you in. Nothing is transmitted, stored or
-        verified — the session lives in browser memory only.
-      </p>
+
     </div>
   );
 }

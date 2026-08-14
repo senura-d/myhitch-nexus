@@ -13,6 +13,7 @@ import {
   IconUsers,
   IconVideo,
 } from "@tabler/icons-react";
+import { AuthGuard } from "@/components/layout/auth-guard";
 import { WorkspaceShell } from "@/components/layout/workspace-shell";
 import { useAdminSummary } from "@/lib/mock-api/hooks";
 
@@ -31,60 +32,62 @@ export default function AdminLayout({
     (summary?.verificationQueue ?? 0);
 
   return (
-    <WorkspaceShell
-      workspace={{
-        title: "Admin console",
-        subtitle: "Platform operations",
-        href: "/admin",
-      }}
-      accentLabel="Admin"
-      groups={[
-        {
-          items: [
-            { href: "/admin", label: "Dashboard", icon: <IconLayoutDashboard /> },
-            {
-              href: "/admin/reviews",
-              label: "Review queue",
-              icon: <IconListCheck />,
-              badge: reviewCount,
-            },
-          ],
-        },
-        {
-          title: "Manage",
-          items: [
-            { href: "/admin/users", label: "Users", icon: <IconUsers /> },
-            {
-              href: "/admin/organisations",
-              label: "Organisations",
-              icon: <IconBuildingCommunity />,
-            },
-            { href: "/admin/content", label: "Content", icon: <IconVideo /> },
-            { href: "/admin/live", label: "Live", icon: <IconBroadcast /> },
-            {
-              href: "/admin/ads",
-              label: "Advertising",
-              icon: <IconSpeakerphone />,
-              badge: summary?.campaignsAwaitingApproval,
-            },
-          ],
-        },
-        {
-          title: "Oversight",
-          items: [
-            { href: "/admin/finance", label: "Finance", icon: <IconCoin /> },
-            { href: "/admin/reports", label: "Cases", icon: <IconGavel /> },
-            {
-              href: "/admin/audit-logs",
-              label: "Audit log",
-              icon: <IconFileText />,
-            },
-            { href: "/admin/settings", label: "Settings", icon: <IconSettings /> },
-          ],
-        },
-      ]}
-    >
-      {children}
-    </WorkspaceShell>
+    <AuthGuard>
+      <WorkspaceShell
+        workspace={{
+          title: "Admin console",
+          subtitle: "Platform operations",
+          href: "/admin",
+        }}
+        accentLabel="Admin"
+        groups={[
+          {
+            items: [
+              { href: "/admin", label: "Dashboard", icon: <IconLayoutDashboard /> },
+              {
+                href: "/admin/reviews",
+                label: "Review queue",
+                icon: <IconListCheck />,
+                badge: reviewCount,
+              },
+            ],
+          },
+          {
+            title: "Manage",
+            items: [
+              { href: "/admin/users", label: "Users", icon: <IconUsers /> },
+              {
+                href: "/admin/organisations",
+                label: "Organisations",
+                icon: <IconBuildingCommunity />,
+              },
+              { href: "/admin/content", label: "Content", icon: <IconVideo /> },
+              { href: "/admin/live", label: "Live", icon: <IconBroadcast /> },
+              {
+                href: "/admin/ads",
+                label: "Advertising",
+                icon: <IconSpeakerphone />,
+                badge: summary?.campaignsAwaitingApproval,
+              },
+            ],
+          },
+          {
+            title: "Oversight",
+            items: [
+              { href: "/admin/finance", label: "Finance", icon: <IconCoin /> },
+              { href: "/admin/reports", label: "Cases", icon: <IconGavel /> },
+              {
+                href: "/admin/audit-logs",
+                label: "Audit log",
+                icon: <IconFileText />,
+              },
+              { href: "/admin/settings", label: "Settings", icon: <IconSettings /> },
+            ],
+          },
+        ]}
+      >
+        {children}
+      </WorkspaceShell>
+    </AuthGuard>
   );
 }

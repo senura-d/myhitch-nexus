@@ -63,6 +63,30 @@ const EN = sub("en", "English");
 const EN_SDH = sub("en", "English (SDH)", "sdh");
 const AUTO_EN = sub("en", "English (auto)", "captions", true);
 
+/** Videos with dedicated on-location photography instead of a poster. */
+const REAL_PHOTO_VIDEO_IDS = [
+  "vid_saltmarsh",
+  "vid_ledger_water",
+  "vid_helio_aurora",
+  "vid_orbit_session_14",
+];
+
+/** Cycled round-robin across every other video's thumbnail and hero art. */
+const POSTER_IMAGES = [
+  "/images/posters/the-batman.png",
+  "/images/posters/after.png",
+  "/images/posters/oppenheimer.png",
+  "/images/posters/kalki-2898-ad.png",
+  "/images/posters/skyfall.png",
+  "/images/posters/archer.png",
+  "/images/posters/the-odyssey.png",
+  "/images/posters/doctor-strange-multiverse-of-madness.png",
+  "/images/posters/the-dark-knight.png",
+  "/images/posters/blade-runner-2049.png",
+  "/images/posters/avengers-endgame.png",
+  "/images/posters/inception.png",
+];
+
 type VideoSeed = Partial<Video> &
   Pick<
     Video,
@@ -118,6 +142,16 @@ function defineVideo(seed: VideoSeed): Video {
       ageRating: "PG",
       contentLabels: [],
     },
+    thumbnailUrl:
+      seed.thumbnailUrl ??
+      (REAL_PHOTO_VIDEO_IDS.includes(seed.id)
+        ? `/images/thumbnails/${seed.id}.jpg`
+        : POSTER_IMAGES[(sampleIndex - 1) % POSTER_IMAGES.length]),
+    heroUrl:
+      seed.heroUrl ??
+      (REAL_PHOTO_VIDEO_IDS.includes(seed.id)
+        ? `/images/heroes/${seed.id}.jpg`
+        : POSTER_IMAGES[(sampleIndex - 1) % POSTER_IMAGES.length]),
     // Local sample only. The player falls back to a simulated timeline when the
     // file is absent, so nothing here ever reaches a streaming provider.
     sampleSrc: `/media/sample-${(sampleIndex % 4) + 1}.mp4`,

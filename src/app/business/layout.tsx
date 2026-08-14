@@ -9,6 +9,7 @@ import {
   IconUsers,
   IconVideo,
 } from "@tabler/icons-react";
+import { AuthGuard } from "@/components/layout/auth-guard";
 import { WorkspaceShell } from "@/components/layout/workspace-shell";
 import { useCampaigns, useLeads } from "@/lib/mock-api/hooks";
 
@@ -26,69 +27,71 @@ export default function BusinessLayout({
   const pendingCampaigns = campaigns.filter((c) => c.status === "pending").length;
 
   return (
-    <WorkspaceShell
-      workspace={{
-        title: "Business Studio",
-        subtitle: "Helio Motors",
-        href: "/business/channel",
-      }}
-      accentLabel="Business"
-      groups={[
-        {
-          items: [
-            {
-              href: "/business/channel",
-              label: "Channel",
-              icon: <IconBuildingStore />,
-            },
-            { href: "/business/videos", label: "Videos", icon: <IconVideo /> },
-          ],
-        },
-        {
-          title: "Advertising",
-          items: [
-            {
-              href: "/business/campaigns",
-              label: "Campaigns",
-              icon: <IconSpeakerphone />,
-              badge: pendingCampaigns,
-            },
-          ],
-        },
-        {
-          title: "Commerce",
-          items: [
-            {
-              href: "/business/product-links",
-              label: "Product links",
-              icon: <IconLink />,
-            },
-            {
-              href: "/business/leads",
-              label: "Leads",
-              icon: <IconUsers />,
-              badge: newLeads,
-            },
-          ],
-        },
-        {
-          title: "Measure",
-          items: [
-            {
-              href: "/business/analytics",
-              label: "Analytics",
-              icon: <IconChartHistogram />,
-            },
-            {
-              href: "/business/billing",
-              label: "Billing",
-              icon: <IconCreditCard />,
-            },
-          ],
-        },
-      ]}
-    >
-      {children}
-    </WorkspaceShell>
+    <AuthGuard>
+      <WorkspaceShell
+        workspace={{
+          title: "Business Studio",
+          subtitle: "Helio Motors",
+          href: "/business/channel",
+        }}
+        accentLabel="Business"
+        groups={[
+          {
+            items: [
+              {
+                href: "/business/channel",
+                label: "Channel",
+                icon: <IconBuildingStore />,
+              },
+              { href: "/business/videos", label: "Videos", icon: <IconVideo /> },
+            ],
+          },
+          {
+            title: "Advertising",
+            items: [
+              {
+                href: "/business/campaigns",
+                label: "Campaigns",
+                icon: <IconSpeakerphone />,
+                badge: pendingCampaigns,
+              },
+            ],
+          },
+          {
+            title: "Commerce",
+            items: [
+              {
+                href: "/business/product-links",
+                label: "Product links",
+                icon: <IconLink />,
+              },
+              {
+                href: "/business/leads",
+                label: "Leads",
+                icon: <IconUsers />,
+                badge: newLeads,
+              },
+            ],
+          },
+          {
+            title: "Measure",
+            items: [
+              {
+                href: "/business/analytics",
+                label: "Analytics",
+                icon: <IconChartHistogram />,
+              },
+              {
+                href: "/business/billing",
+                label: "Billing",
+                icon: <IconCreditCard />,
+              },
+            ],
+          },
+        ]}
+      >
+        {children}
+      </WorkspaceShell>
+    </AuthGuard>
   );
 }

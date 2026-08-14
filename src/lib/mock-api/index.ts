@@ -368,6 +368,19 @@ export async function getChannels(): Promise<Channel[]> {
   return clone(store.channels);
 }
 
+export async function updateChannel(
+  id: string,
+  patch: Partial<Channel>,
+): Promise<Channel> {
+  await latency("fast");
+  const channel = store.channels.find(
+    (item) => item.id === id || item.handle === id,
+  );
+  if (!channel) throw new Error(`Channel not found: ${id}`);
+  Object.assign(channel, patch);
+  return clone(channel);
+}
+
 export async function getChannelVideos(
   channelId: string,
   opts: { includeUnpublished?: boolean } = {},
@@ -1752,8 +1765,9 @@ export async function updateConfigTable<K extends keyof PlatformConfigTables>(
 
 /* ============================== Account ================================== */
 
-export async function getCurrentUser(): Promise<User> {
+export async function getCurrentUser(): Promise<User | null> {
   await latency("fast");
+  if (!store.loggedIn) return null;
   return clone(store.user);
 }
 
@@ -1846,7 +1860,13 @@ export async function verifyOtp(code: string): Promise<{ ok: boolean; message?: 
 export async function login(email: string): Promise<User> {
   await latency();
   store.user.email = email || store.user.email;
+  store.loggedIn = true;
   return clone(store.user);
+}
+
+export async function logout(): Promise<void> {
+  await latency("fast");
+  store.loggedIn = false;
 }
 
 export { NOW };

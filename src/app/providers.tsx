@@ -15,7 +15,7 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = React.createContext<ThemeContextValue>({
-  theme: "dark",
+  theme: "light",
   setTheme: () => {},
   toggleTheme: () => {},
 });
@@ -23,7 +23,7 @@ const ThemeContext = React.createContext<ThemeContextValue>({
 export const useTheme = () => React.useContext(ThemeContext);
 
 function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = React.useState<Theme>("dark");
+  const [theme, setThemeState] = React.useState<Theme>("light");
 
   React.useEffect(() => {
     const stored = window.localStorage.getItem("nx-theme") as Theme | null;

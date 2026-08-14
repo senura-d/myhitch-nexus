@@ -11,6 +11,7 @@ import {
   IconUpload,
   IconVideo,
 } from "@tabler/icons-react";
+import { AuthGuard } from "@/components/layout/auth-guard";
 import { WorkspaceShell } from "@/components/layout/workspace-shell";
 import { useCurrentUser, useModerationComments } from "@/lib/mock-api/hooks";
 
@@ -25,61 +26,63 @@ export default function StudioLayout({
   const heldCount = comments.filter((comment) => comment.status === "held").length;
 
   return (
-    <WorkspaceShell
-      workspace={{
-        title: "Creator Studio",
-        subtitle: user?.name ?? "Your channel",
-        href: "/studio/dashboard",
-      }}
-      accentLabel="Creator"
-      groups={[
-        {
-          items: [
-            {
-              href: "/studio/dashboard",
-              label: "Dashboard",
-              icon: <IconLayoutDashboard />,
-            },
-            { href: "/studio/content", label: "Content", icon: <IconVideo /> },
-            { href: "/studio/upload", label: "Upload", icon: <IconUpload /> },
-            { href: "/studio/live", label: "Live", icon: <IconBroadcast /> },
-            {
-              href: "/studio/playlists",
-              label: "Playlists & series",
-              icon: <IconPlaylist />,
-            },
-            {
-              href: "/studio/comments",
-              label: "Comments",
-              icon: <IconMessage />,
-              badge: heldCount,
-            },
-          ],
-        },
-        {
-          title: "Measure",
-          items: [
-            {
-              href: "/studio/analytics",
-              label: "Analytics",
-              icon: <IconChartHistogram />,
-            },
-            { href: "/studio/revenue", label: "Revenue", icon: <IconCoin /> },
-          ],
-        },
-        {
-          title: "Configure",
-          items: [
-            {
-              href: "/studio/channel-settings",
-              label: "Channel settings",
-              icon: <IconSettings />,
-            },
-          ],
-        },
-      ]}
-    >
-      {children}
-    </WorkspaceShell>
+    <AuthGuard>
+      <WorkspaceShell
+        workspace={{
+          title: "Creator Studio",
+          subtitle: user?.name ?? "Your channel",
+          href: "/studio/dashboard",
+        }}
+        accentLabel="Creator"
+        groups={[
+          {
+            items: [
+              {
+                href: "/studio/dashboard",
+                label: "Dashboard",
+                icon: <IconLayoutDashboard />,
+              },
+              { href: "/studio/content", label: "Content", icon: <IconVideo /> },
+              { href: "/studio/upload", label: "Upload", icon: <IconUpload /> },
+              { href: "/studio/live", label: "Live", icon: <IconBroadcast /> },
+              {
+                href: "/studio/playlists",
+                label: "Playlists & series",
+                icon: <IconPlaylist />,
+              },
+              {
+                href: "/studio/comments",
+                label: "Comments",
+                icon: <IconMessage />,
+                badge: heldCount,
+              },
+            ],
+          },
+          {
+            title: "Measure",
+            items: [
+              {
+                href: "/studio/analytics",
+                label: "Analytics",
+                icon: <IconChartHistogram />,
+              },
+              { href: "/studio/revenue", label: "Revenue", icon: <IconCoin /> },
+            ],
+          },
+          {
+            title: "Configure",
+            items: [
+              {
+                href: "/studio/channel-settings",
+                label: "Channel settings",
+                icon: <IconSettings />,
+              },
+            ],
+          },
+        ]}
+      >
+        {children}
+      </WorkspaceShell>
+    </AuthGuard>
   );
 }

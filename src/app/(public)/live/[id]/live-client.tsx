@@ -11,7 +11,7 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import * as React from "react";
 import { VideoPlayer } from "@/components/player/video-player";
 import { Avatar } from "@/components/ui/avatar";
@@ -28,6 +28,7 @@ import { channelById } from "@/lib/mock-api/data/channels";
 import { videos } from "@/lib/mock-api/data/videos";
 import {
   useChatMessages,
+  useCurrentUser,
   useLiveEvent,
   useModerateChatMessage,
   usePolls,
@@ -51,12 +52,21 @@ export function LiveViewerClient() {
   const { toast } = useToast();
 
   const { data: event, isLoading } = useLiveEvent(id);
+  const { data: currentUser } = useCurrentUser();
+  const router = useRouter();
   const { data: messages = [] } = useChatMessages(id);
   const { data: polls = [] } = usePolls(id);
   const sendMessage = useSendChatMessage(id);
   const moderateMessage = useModerateChatMessage(id);
   const votePoll = useVotePoll(id);
   const toggleFollow = useToggleFollow();
+
+  // Redirect guests to the login page
+  React.useEffect(() => {
+    if (!isLoading && currentUser === null) {
+      router.replace("/auth/login");
+    }
+  }, [isLoading, currentUser, router]);
 
   const [draft, setDraft] = React.useState("");
   const [tab, setTab] = React.useState("chat");
@@ -159,6 +169,7 @@ export function LiveViewerClient() {
                     <Avatar
                       name={channel.name}
                       gradient={channel.avatarGradient}
+                      src={channel.avatarUrl}
                       size="lg"
                       verified={channel.verified}
                     />
@@ -493,6 +504,8 @@ function TicketGate({
       className="relative aspect-video w-full overflow-hidden bg-black sm:rounded-lg"
     >
       <Poster
+        src={event.thumbnailUrl}
+        alt={event.title}
         gradient={event.posterGradient}
         seed={event.id}
         ratio="none"
@@ -557,6 +570,8 @@ function ScheduledSurface({ event }: { event: LiveEvent }) {
       className="relative aspect-video w-full overflow-hidden bg-black sm:rounded-lg"
     >
       <Poster
+        src={event.thumbnailUrl}
+        alt={event.title}
         gradient={event.posterGradient}
         seed={event.id}
         ratio="none"

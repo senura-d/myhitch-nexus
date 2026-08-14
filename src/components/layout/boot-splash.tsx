@@ -63,18 +63,12 @@ export function BootSplash() {
         <NexusLoader size="lg" label="Loading MYHitch Nexus" />
 
         <div className="text-center">
-          <p className="font-display text-lg font-semibold tracking-tight text-fg">
-            MYHitch <span className="text-accent">Nexus</span>
-          </p>
+
           <p className="mt-1 text-xs text-fg-subtle">
             Preparing your catalogue…
           </p>
         </div>
       </div>
-
-      <p className="absolute bottom-6 px-6 text-center text-2xs text-fg-subtle">
-        Front-end prototype · all data is mocked in the browser
-      </p>
     </div>
   );
 }

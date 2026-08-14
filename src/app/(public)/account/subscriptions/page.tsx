@@ -114,6 +114,7 @@ export default function SubscriptionsPage() {
                       <Avatar
                         name={channel.name}
                         gradient={channel.avatarGradient}
+                        src={channel.avatarUrl}
                         size="sm"
                         verified={channel.verified}
                       />

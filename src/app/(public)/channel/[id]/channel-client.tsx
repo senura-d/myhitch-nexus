@@ -79,6 +79,8 @@ export function ChannelClient() {
       {/* Banner */}
       <div className="relative">
         <Poster
+          src={channel.bannerUrl}
+          alt={channel.name}
           gradient={channel.bannerGradient}
           seed={`${channel.id}-banner`}
           ratio="none"
@@ -92,6 +94,7 @@ export function ChannelClient() {
           <Avatar
             name={channel.name}
             gradient={channel.avatarGradient}
+            src={channel.avatarUrl}
             size="2xl"
             verified={channel.verified}
             square
@@ -184,6 +187,8 @@ export function ChannelClient() {
                   .map((playlist) => (
                     <Card key={playlist.id} interactive className="overflow-hidden">
                       <Poster
+                        src={playlist.thumbnailUrl}
+                        alt={playlist.title}
                         gradient={playlist.posterGradient}
                         seed={playlist.id}
                         ratio="video"
@@ -221,6 +226,8 @@ export function ChannelClient() {
                     <Link href={`/live/${event.id}`}>
                       <Card interactive className="flex flex-wrap items-center gap-4 p-3.5">
                         <Poster
+                          src={event.thumbnailUrl}
+                          alt={event.title}
                           gradient={event.posterGradient}
                           seed={event.id}
                           ratio="video"

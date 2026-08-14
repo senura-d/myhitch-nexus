@@ -184,6 +184,8 @@ export default function AdminLivePage() {
                 <Card key={event.id}>
                   <CardBody className="flex flex-wrap gap-4">
                     <Poster
+                      src={event.thumbnailUrl}
+                      alt={event.title}
                       gradient={event.posterGradient}
                       seed={event.id}
                       ratio="video"

@@ -20,12 +20,13 @@ import { CONTENT_TYPE_LABELS } from "@/lib/mock-api/data/categories";
 import { channelById } from "@/lib/mock-api/data/channels";
 import {
   useContinueWatching,
+  useCurrentUser,
   useFeaturedContent,
   useLiveEvents,
   useToggleWatchlist,
   useWatchlist,
 } from "@/lib/mock-api/hooks";
-import type { Video } from "@/lib/mock-api/types";
+import type { LiveEvent, Video } from "@/lib/mock-api/types";
 import {
   cn,
   compactNumber,
@@ -33,13 +34,28 @@ import {
   formatDateTime,
   formatRuntime,
 } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter();
   const { data: featured, isLoading } = useFeaturedContent();
   const { data: continueWatching = [] } = useContinueWatching();
   const { data: liveEvents = [] } = useLiveEvents();
   const { data: watchlist = [] } = useWatchlist();
   const toggleWatchlist = useToggleWatchlist();
+  const { data: user } = useCurrentUser();
+  const isGuest = !user;
+
+  const goToVideo = React.useCallback(
+    (videoId: string) => {
+      if (isGuest) {
+        router.push("/auth/login");
+      } else {
+        router.push(`/video/${videoId}`);
+      }
+    },
+    [isGuest, router],
+  );
 
   const progressFor = React.useCallback(
     (videoId: string) => {
@@ -64,6 +80,7 @@ export default function HomePage() {
         loading={isLoading}
         watchlist={watchlist.map((item) => item.id)}
         onToggleWatchlist={(id) => toggleWatchlist.mutate(id)}
+        goToVideo={goToVideo}
       />
 
       <div className="mt-8 space-y-10 sm:mt-10">
@@ -98,11 +115,13 @@ function Hero({
   loading,
   watchlist,
   onToggleWatchlist,
+  goToVideo,
 }: {
   videos: Video[];
   loading: boolean;
   watchlist: string[];
   onToggleWatchlist: (id: string) => void;
+  goToVideo: (id: string) => void;
 }) {
   const [index, setIndex] = React.useState(0);
 
@@ -137,6 +156,8 @@ function Hero({
       {videos.map((item, itemIndex) => (
         <Poster
           key={item.id}
+          src={item.heroUrl || item.thumbnailUrl}
+          alt={item.title}
           gradient={item.posterGradient}
           seed={item.id}
           ratio="none"
@@ -194,16 +215,16 @@ function Hero({
             </p>
 
             <div className="mt-5 flex flex-wrap items-center gap-2">
-              <Button variant="primary" size="lg" href={`/video/${video.id}`}>
+              <Button variant="primary" size="lg" onClick={() => goToVideo(video.id)}>
                 <IconPlayerPlayFilled />
                 {price ? "Watch preview" : "Play"}
               </Button>
               {price ? (
-                <Button variant="secondary" size="lg" href={`/video/${video.id}`}>
+                <Button variant="secondary" size="lg" onClick={() => goToVideo(video.id)}>
                   From {formatCurrency(price.amount, price.currency)}
                 </Button>
               ) : (
-                <Button variant="secondary" size="lg" href={`/video/${video.id}`}>
+                <Button variant="secondary" size="lg" onClick={() => goToVideo(video.id)}>
                   <IconInfoCircle />
                   More info
                 </Button>
@@ -310,16 +331,7 @@ function useRailVideos(ids: string[], seeded: Map<string, Video>) {
 function LiveRail({
   events,
 }: {
-  events: Array<{
-    id: string;
-    title: string;
-    channelId: string;
-    status: string;
-    scheduledStart: string;
-    viewerCount: number;
-    posterGradient: [string, string];
-    accessType: string;
-  }>;
+  events: LiveEvent[];
 }) {
   const shown = events.filter(
     (event) => event.status === "live" || event.status === "upcoming",
@@ -354,6 +366,8 @@ function LiveRail({
               className="group w-[15rem] sm:w-[17rem] lg:w-[19rem]"
             >
               <Poster
+                src={event.thumbnailUrl}
+                alt={event.title}
                 gradient={event.posterGradient}
                 seed={event.id}
                 ratio="video"

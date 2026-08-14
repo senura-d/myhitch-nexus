@@ -107,7 +107,13 @@ function FeaturedLiveCard({ event }: { event: LiveEvent }) {
   return (
     <Link href={`/live/${event.id}`} className="group">
       <Card interactive className="overflow-hidden">
-        <Poster gradient={event.posterGradient} seed={event.id} ratio="video">
+        <Poster
+          src={event.thumbnailUrl}
+          alt={event.title}
+          gradient={event.posterGradient}
+          seed={event.id}
+          ratio="video"
+        >
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
           <div className="absolute left-3 top-3 flex gap-2">
             <LiveBadge />
@@ -134,6 +140,7 @@ function FeaturedLiveCard({ event }: { event: LiveEvent }) {
               <Avatar
                 name={channel.name}
                 gradient={channel.avatarGradient}
+                src={channel.avatarUrl}
                 size="sm"
                 verified={channel.verified}
               />
@@ -156,7 +163,13 @@ function LiveCard({ event }: { event: LiveEvent }) {
   return (
     <Link href={`/live/${event.id}`} className="group">
       <Card interactive className="h-full overflow-hidden">
-        <Poster gradient={event.posterGradient} seed={event.id} ratio="video">
+        <Poster
+          src={event.thumbnailUrl}
+          alt={event.title}
+          gradient={event.posterGradient}
+          seed={event.id}
+          ratio="video"
+        >
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
           <div className="absolute left-2 top-2">
             {event.status === "live" ? (

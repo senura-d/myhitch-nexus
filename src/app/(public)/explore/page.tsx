@@ -33,21 +33,36 @@ export default function ExplorePage() {
             <Link key={category.id} href={`/category/${category.slug}`}>
               <Card
                 interactive
-                className="relative h-full overflow-hidden p-4"
+                className="group relative h-full min-h-[8.5rem] overflow-hidden p-4"
                 style={{
                   borderLeftColor: CHART_TOKENS[category.accentToken - 1],
                   borderLeftWidth: 3,
                 }}
               >
-                <p className="text-sm font-medium text-fg">{category.name}</p>
-                <p className="mt-1 nx-clamp-2 text-xs leading-relaxed text-fg-muted">
-                  {category.description}
-                </p>
-                <p className="mt-2.5 text-2xs uppercase tracking-wide text-fg-subtle">
-                  {CONTENT_TYPE_LABELS[category.contentType]} ·{" "}
-                  <span className="nx-tnum">{compactNumber(category.videoCount)}</span>{" "}
-                  titles
-                </p>
+                {category.imageUrl ? (
+                  <>
+                    <img
+                      src={category.imageUrl}
+                      alt={category.name}
+                      loading="lazy"
+                      className="absolute inset-0 size-full object-cover opacity-20 transition-all duration-300 group-hover:scale-105 group-hover:opacity-30"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-surface-1 via-surface-1/90 to-surface-1/60" />
+                  </>
+                ) : null}
+                <div className="relative z-10">
+                  <p className="text-sm font-semibold text-fg transition-colors group-hover:text-accent">
+                    {category.name}
+                  </p>
+                  <p className="mt-1 nx-clamp-2 text-xs leading-relaxed text-fg-muted">
+                    {category.description}
+                  </p>
+                  <p className="mt-2.5 text-2xs uppercase tracking-wide text-fg-subtle">
+                    {CONTENT_TYPE_LABELS[category.contentType]} ·{" "}
+                    <span className="nx-tnum">{compactNumber(category.videoCount)}</span>{" "}
+                    titles
+                  </p>
+                </div>
               </Card>
             </Link>
           ))}

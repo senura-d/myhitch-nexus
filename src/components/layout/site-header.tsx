@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, MenuItem, MenuLabel, MenuSeparator } from "@/components/ui/menu";
 import {
   useCurrentUser,
+  useLogout,
   useNotifications,
   useSwitchProfile,
 } from "@/lib/mock-api/hooks";
@@ -62,11 +63,13 @@ export function SiteHeader() {
   const { data: user } = useCurrentUser();
   const { data: notifications = [] } = useNotifications();
   const switchProfile = useSwitchProfile();
+  const logout = useLogout();
 
   const [query, setQuery] = React.useState("");
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
 
+  const isGuest = !user;
   const unread = notifications.filter((item) => !item.read).length;
   const activeProfile = user?.profiles.find(
     (profile) => profile.id === user.activeProfileId,
@@ -83,6 +86,12 @@ export function SiteHeader() {
     router.push(`/search?q=${encodeURIComponent(query.trim())}`);
   };
 
+  const handleLogout = () => {
+    logout.mutate(undefined, {
+      onSuccess: () => router.push("/"),
+    });
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-bg/85 backdrop-blur-md">
       <div className="flex h-header items-center gap-2 px-3 sm:gap-3 sm:px-5 lg:px-8">
@@ -97,11 +106,8 @@ export function SiteHeader() {
           {mobileOpen ? <IconX /> : <IconMenu2 />}
         </Button>
 
-        <Link href="/" className="flex shrink-0 items-center gap-2">
-          <NexusMark className="size-7" />
-          <span className="hidden font-display text-base font-semibold tracking-tight text-fg sm:inline">
-            MYHitch <span className="text-accent">Nexus</span>
-          </span>
+        <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="MYHitch Nexus Home">
+          <NexusMark className="h-10 w-auto" />
         </Link>
 
         <nav aria-label="Primary" className="ml-2 hidden items-center gap-0.5 lg:flex">
@@ -167,154 +173,164 @@ export function SiteHeader() {
             {theme === "dark" ? <IconSun /> : <IconMoon />}
           </Button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            href="/studio/upload"
-            className="hidden md:inline-flex"
-          >
-            <IconVideoPlus />
-            Upload
-          </Button>
+          {/* ---- GUEST: show Sign in button only ---- */}
+          {isGuest ? (
+            <Button variant="primary" size="sm" href="/auth/login" className="ml-1">
+              Sign in
+            </Button>
+          ) : (
+            <>
+              {/* Upload — authenticated only */}
+              <Button
+                variant="ghost"
+                size="sm"
+                href="/studio/upload"
+                className="hidden md:inline-flex"
+              >
+                <IconVideoPlus />
+                Upload
+              </Button>
 
-          {/* Notifications */}
-          <Menu
-            label="Notifications"
-            panelClassName="w-80"
-            trigger={
-              <button
-                type="button"
-                aria-label={`Notifications${unread ? `, ${unread} unread` : ""}`}
-                className="relative inline-flex size-9 items-center justify-center rounded text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
-              >
-                <IconBell className="size-[18px]" />
-                {unread > 0 ? (
-                  <span className="absolute right-1 top-1 flex size-4 items-center justify-center rounded-full bg-accent text-[9px] font-bold text-accent-fg nx-tnum">
-                    {unread > 9 ? "9+" : unread}
-                  </span>
-                ) : null}
-              </button>
-            }
-          >
-            <div className="flex items-center justify-between px-2.5 py-2">
-              <p className="text-sm font-semibold text-fg">Notifications</p>
-              <Link
-                href="/account/notifications"
-                className="text-2xs font-medium text-accent hover:underline"
-              >
-                Preferences
-              </Link>
-            </div>
-            <MenuSeparator />
-            <div className="nx-scrollbar max-h-80 overflow-y-auto">
-              {notifications.slice(0, 6).map((item) => (
-                <MenuItem key={item.id} href={item.href} className="items-start">
-                  <span className="block">
-                    <span className="flex items-center gap-2">
-                      {!item.read ? (
-                        <span className="size-1.5 shrink-0 rounded-full bg-accent" />
-                      ) : null}
-                      <span
-                        className={cn(
-                          "text-xs",
-                          item.read ? "text-fg-muted" : "font-medium text-fg",
-                        )}
-                      >
-                        {item.title}
+              {/* Notifications — authenticated only */}
+              <Menu
+                label="Notifications"
+                panelClassName="w-80"
+                trigger={
+                  <button
+                    type="button"
+                    aria-label={`Notifications${unread ? `, ${unread} unread` : ""}`}
+                    className="relative inline-flex size-9 items-center justify-center rounded text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                  >
+                    <IconBell className="size-[18px]" />
+                    {unread > 0 ? (
+                      <span className="absolute right-1 top-1 flex size-4 items-center justify-center rounded-full bg-accent text-[9px] font-bold text-accent-fg nx-tnum">
+                        {unread > 9 ? "9+" : unread}
                       </span>
-                    </span>
-                    <span className="mt-0.5 block text-2xs text-fg-subtle">
-                      {relativeTime(item.createdAt)}
-                    </span>
-                  </span>
-                </MenuItem>
-              ))}
-            </div>
-          </Menu>
-
-          {/* Account */}
-          <Menu
-            label="Account"
-            panelClassName="w-64"
-            trigger={
-              <button
-                type="button"
-                className="ml-0.5 flex items-center gap-1 rounded-full p-0.5 transition-colors hover:bg-surface-2"
+                    ) : null}
+                  </button>
+                }
               >
-                <Avatar
-                  name={activeProfile?.name ?? user?.name ?? "Guest"}
-                  gradient={activeProfile?.avatarGradient ?? user?.avatarGradient}
-                  size="sm"
-                />
-                <IconChevronDown className="size-3.5 text-fg-subtle" />
-              </button>
-            }
-          >
-            {user ? (
-              <>
-                <div className="px-2.5 py-2">
-                  <p className="truncate text-sm font-medium text-fg">{user.name}</p>
-                  <p className="truncate text-xs text-fg-subtle">{user.email}</p>
+                <div className="flex items-center justify-between px-2.5 py-2">
+                  <p className="text-sm font-semibold text-fg">Notifications</p>
+                  <Link
+                    href="/account/notifications"
+                    className="text-2xs font-medium text-accent hover:underline"
+                  >
+                    Preferences
+                  </Link>
                 </div>
                 <MenuSeparator />
-                <MenuLabel>Viewing as</MenuLabel>
-                {user.profiles.map((profile) => (
-                  <MenuItem
-                    key={profile.id}
-                    active={profile.id === user.activeProfileId}
-                    onClick={() => switchProfile.mutate(profile.id)}
-                    icon={
-                      <Avatar
-                        name={profile.name}
-                        gradient={profile.avatarGradient}
-                        size="xs"
-                      />
-                    }
-                    trailing={
-                      profile.kind !== "adult" ? (
-                        <Badge tone="outline" size="sm">
-                          {profile.maxAgeRating}
-                        </Badge>
-                      ) : undefined
-                    }
+                <div className="nx-scrollbar max-h-80 overflow-y-auto">
+                  {notifications.slice(0, 6).map((item) => (
+                    <MenuItem key={item.id} href={item.href} className="items-start">
+                      <span className="block">
+                        <span className="flex items-center gap-2">
+                          {!item.read ? (
+                            <span className="size-1.5 shrink-0 rounded-full bg-accent" />
+                          ) : null}
+                          <span
+                            className={cn(
+                              "text-xs",
+                              item.read ? "text-fg-muted" : "font-medium text-fg",
+                            )}
+                          >
+                            {item.title}
+                          </span>
+                        </span>
+                        <span className="mt-0.5 block text-2xs text-fg-subtle">
+                          {relativeTime(item.createdAt)}
+                        </span>
+                      </span>
+                    </MenuItem>
+                  ))}
+                </div>
+              </Menu>
+
+              {/* Account menu — authenticated only */}
+              <Menu
+                label="Account"
+                panelClassName="w-64"
+                trigger={
+                  <button
+                    type="button"
+                    className="ml-0.5 flex items-center gap-1 rounded-full p-0.5 transition-colors hover:bg-surface-2"
                   >
-                    {profile.name}
-                  </MenuItem>
-                ))}
+                    <Avatar
+                      name={activeProfile?.name ?? user?.name ?? "Guest"}
+                      gradient={activeProfile?.avatarGradient ?? user?.avatarGradient}
+                      src={activeProfile?.avatarUrl ?? user?.avatarUrl}
+                      size="sm"
+                    />
+                    <IconChevronDown className="size-3.5 text-fg-subtle" />
+                  </button>
+                }
+              >
+                <>
+                  <div className="px-2.5 py-2">
+                    <p className="truncate text-sm font-medium text-fg">{user.name}</p>
+                    <p className="truncate text-xs text-fg-subtle">{user.email}</p>
+                  </div>
+                  <MenuSeparator />
+                  <MenuLabel>Viewing as</MenuLabel>
+                  {user.profiles.map((profile) => (
+                    <MenuItem
+                      key={profile.id}
+                      active={profile.id === user.activeProfileId}
+                      onClick={() => switchProfile.mutate(profile.id)}
+                      icon={
+                        <Avatar
+                          name={profile.name}
+                          gradient={profile.avatarGradient}
+                          src={profile.avatarUrl}
+                          size="xs"
+                        />
+                      }
+                      trailing={
+                        profile.kind !== "adult" ? (
+                          <Badge tone="outline" size="sm">
+                            {profile.maxAgeRating}
+                          </Badge>
+                        ) : undefined
+                      }
+                    >
+                      {profile.name}
+                    </MenuItem>
+                  ))}
+                  <MenuSeparator />
+                </>
+                <MenuItem href="/account/profile" icon={<IconUsers />}>
+                  Profile &amp; settings
+                </MenuItem>
+                <MenuItem href="/account/watchlist" icon={<IconBookmark />}>
+                  Watchlist
+                </MenuItem>
+                <MenuItem href="/account/history" icon={<IconHistory />}>
+                  Watch history
+                </MenuItem>
                 <MenuSeparator />
-              </>
-            ) : null}
-            <MenuItem href="/account/profile" icon={<IconUsers />}>
-              Profile &amp; settings
-            </MenuItem>
-            <MenuItem href="/account/watchlist" icon={<IconBookmark />}>
-              Watchlist
-            </MenuItem>
-            <MenuItem href="/account/history" icon={<IconHistory />}>
-              Watch history
-            </MenuItem>
-            <MenuSeparator />
-            <MenuLabel>Workspaces</MenuLabel>
-            <MenuItem href="/studio/dashboard" icon={<IconLayoutGrid />}>
-              Creator Studio
-            </MenuItem>
-            <MenuItem href="/business/channel" icon={<IconBuildingStore />}>
-              Business Studio
-            </MenuItem>
-            <MenuItem href="/studio/live" icon={<IconBroadcast />}>
-              Go live
-            </MenuItem>
-            <MenuItem href="/admin" icon={<IconShieldCog />}>
-              Admin console
-            </MenuItem>
-            <MenuSeparator />
-            <MenuItem href="/account/settings" icon={<IconSettings />}>
-              Settings
-            </MenuItem>
-            <MenuItem href="/auth/login" icon={<IconLogout />}>
-              Sign out
-            </MenuItem>
-          </Menu>
+                <MenuLabel>Workspaces</MenuLabel>
+                <MenuItem href="/studio/dashboard" icon={<IconLayoutGrid />}>
+                  Creator Studio
+                </MenuItem>
+                <MenuItem href="/business/channel" icon={<IconBuildingStore />}>
+                  Business Studio
+                </MenuItem>
+                <MenuItem href="/studio/live" icon={<IconBroadcast />}>
+                  Go live
+                </MenuItem>
+                <MenuItem href="/admin" icon={<IconShieldCog />}>
+                  Admin console
+                </MenuItem>
+                <MenuSeparator />
+                <MenuItem href="/account/settings" icon={<IconSettings />}>
+                  Settings
+                </MenuItem>
+                <MenuItem onClick={handleLogout} icon={<IconLogout />}>
+                  Sign out
+                </MenuItem>
+              </Menu>
+            </>
+          )}
         </div>
 
         {searchOpen ? (
@@ -358,10 +374,16 @@ export function SiteHeader() {
             })}
           </div>
           <div className="mt-2 flex gap-2 border-t border-border pt-2">
-            <Button variant="primary" size="sm" href="/studio/upload" block>
-              <IconVideoPlus />
-              Upload
-            </Button>
+            {isGuest ? (
+              <Button variant="primary" size="sm" href="/auth/login" block>
+                Sign in
+              </Button>
+            ) : (
+              <Button variant="primary" size="sm" href="/studio/upload" block>
+                <IconVideoPlus />
+                Upload
+              </Button>
+            )}
             <Button variant="secondary" size="sm" onClick={toggleTheme}>
               {theme === "dark" ? <IconSun /> : <IconMoon />}
             </Button>

@@ -44,7 +44,7 @@ export function WorkspaceShell({
     <div className="flex h-full flex-col">
       <div className="flex h-header shrink-0 items-center gap-2 border-b border-border px-4">
         <Link href="/" className="flex items-center gap-2" aria-label="MYHitch Nexus home">
-          <NexusMark className="size-6" />
+          <NexusMark className="h-10 w-auto" />
         </Link>
         <Link href={workspace.href} className="min-w-0">
           <p className="truncate font-display text-sm font-semibold text-fg">

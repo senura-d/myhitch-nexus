@@ -55,21 +55,13 @@ export function SiteFooter() {
       <div className="mx-auto max-w-[110rem] px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[1.3fr_repeat(4,1fr)]">
           <div>
-            <Link href="/" className="flex items-center gap-2">
-              <NexusMark className="size-7" />
-              <span className="font-display text-base font-semibold tracking-tight text-fg">
-                MYHitch <span className="text-accent">Nexus</span>
-              </span>
+            <Link href="/" className="flex items-center gap-2" aria-label="MYHitch Nexus Home">
+              <NexusMark className="h-10 w-auto" />
             </Link>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-fg-muted">
               Commercial video, film, education, live, news and creator content in
               one ecosystem — with publishing, discovery, monetisation and commerce
               built in.
-            </p>
-            <p className="mt-4 rounded border border-border bg-surface-2 px-3 py-2 text-xs leading-relaxed text-fg-subtle">
-              <strong className="text-fg-muted">Front-end prototype.</strong> All
-              data is mocked in the browser. No payment, streaming, DRM or
-              ad-delivery services are contacted.
             </p>
           </div>
 
@@ -95,16 +87,10 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-border pt-6 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 MYHitch Nexus. Prototype build.</p>
+          <p>© 2026 MYHitch Nexus.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <Link href="/admin" className="transition-colors hover:text-fg">
               Admin console
-            </Link>
-            <Link href="/sitemap" className="transition-colors hover:text-fg">
-              Sitemap
-            </Link>
-            <Link href="/auth/register" className="transition-colors hover:text-fg">
-              Create an account
             </Link>
             <span>Terms</span>
             <span>Privacy</span>

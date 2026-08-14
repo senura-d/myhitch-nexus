@@ -31,11 +31,8 @@ export function StatusScreen({
   return (
     <div className="flex min-h-dvh flex-col bg-bg">
       <header className="flex h-header shrink-0 items-center px-5 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
-          <NexusMark className="size-7" />
-          <span className="font-display text-base font-semibold tracking-tight text-fg">
-            MYHitch <span className="text-accent">Nexus</span>
-          </span>
+        <Link href="/" className="flex items-center gap-2" aria-label="MYHitch Nexus Home">
+          <NexusMark className="h-10 w-auto" />
         </Link>
       </header>
 
@@ -82,10 +79,6 @@ export function StatusScreen({
           ) : null}
         </div>
       </main>
-
-      <footer className="shrink-0 px-5 py-6 text-center text-2xs text-fg-subtle">
-        Front-end prototype · all data is mocked in the browser
-      </footer>
     </div>
   );
 }

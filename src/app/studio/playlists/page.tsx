@@ -79,6 +79,8 @@ export default function StudioPlaylistsPage() {
               {playlists.map((playlist) => (
                 <Card key={playlist.id} className="overflow-hidden">
                   <Poster
+                    src={playlist.thumbnailUrl}
+                    alt={playlist.title}
                     gradient={playlist.posterGradient}
                     seed={playlist.id}
                     ratio="video"

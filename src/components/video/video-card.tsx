@@ -14,6 +14,7 @@ import * as React from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge, LiveBadge, StatusBadge } from "@/components/ui/badge";
 import { channelById } from "@/lib/mock-api/data/channels";
+import { useCurrentUser } from "@/lib/mock-api/hooks";
 import type { Video } from "@/lib/mock-api/types";
 import {
   cn,
@@ -69,9 +70,13 @@ export function VideoCard({
   href,
   minimal,
 }: VideoCardProps) {
+  const { data: user } = useCurrentUser();
+  const isGuest = !user;
+
   const channel = channelById(video.channelId);
   const access = accessLabel(video);
-  const link = href ?? `/video/${video.id}`;
+  // Guests are redirected to login instead of going directly to the video page.
+  const link = href ?? (isGuest ? "/auth/login" : `/video/${video.id}`);
   const isRow = layout === "row";
   const geoLimited =
     video.rights.blockedCountries.length > 0 ||
@@ -79,6 +84,8 @@ export function VideoCard({
 
   const thumbnail = (
     <Poster
+      src={video.thumbnailUrl}
+      alt={video.title}
       gradient={video.posterGradient}
       seed={video.id}
       ratio={layout === "poster" ? "poster" : "video"}
@@ -170,6 +177,7 @@ export function VideoCard({
               <Avatar
                 name={channel.name}
                 gradient={channel.avatarGradient}
+                src={channel.avatarUrl}
                 size="sm"
                 className="mt-0.5"
               />

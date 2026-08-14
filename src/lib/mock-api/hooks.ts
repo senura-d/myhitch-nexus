@@ -11,6 +11,7 @@ import type {
   AnalyticsRange,
   Campaign,
   Category,
+  Channel,
   LiveEvent,
   ModerationAction,
   ModerationItem,
@@ -114,6 +115,17 @@ export const useChannel = (id: string) =>
 
 export const useChannels = () =>
   useQuery({ queryKey: qk.channels, queryFn: api.getChannels });
+
+export function useUpdateChannel(id: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (patch: Partial<Channel>) => api.updateChannel(id, patch),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: qk.channel(id) });
+      client.invalidateQueries({ queryKey: qk.channels });
+    },
+  });
+}
 
 export const useChannelVideos = (channelId: string, includeUnpublished = false) =>
   useQuery({
@@ -763,6 +775,14 @@ export function useVerifyOtp() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: api.verifyOtp,
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.user }),
+  });
+}
+
+export function useLogout() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.logout,
     onSuccess: () => client.invalidateQueries({ queryKey: qk.user }),
   });
 }

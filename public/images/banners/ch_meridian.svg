@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="ban_grad_ch_meridian" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34C77B" />
+      <stop offset="100%" stop-color="#12694A" />
+    </linearGradient>
+    <pattern id="ban_pat_ch_meridian" width="60" height="60" patternUnits="userSpaceOnUse">
+      <circle cx="30" cy="30" r="1.5" fill="#ffffff" opacity="0.15" />
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="400" fill="url(#ban_grad_ch_meridian)" />
+  <rect width="1600" height="400" fill="url(#ban_pat_ch_meridian)" />
+
+  <!-- Abstract light streaks -->
+  <path d="M 0 400 Q 400 100 800 250 T 1600 50" fill="none" stroke="#ffffff" stroke-width="4" opacity="0.12" />
+  <path d="M 0 350 Q 500 200 1000 300 T 1600 100" fill="none" stroke="#38bdf8" stroke-width="2" opacity="0.2" />
+
+  <g transform="translate(120, 240)">
+    <text x="0" y="0" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="800" letter-spacing="-1">Meridian University</text>
+    
+    <text x="0" y="44" fill="#cbd5e1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400">Open lectures and accredited short courses.</text>
+    
+  </g>
+</svg>

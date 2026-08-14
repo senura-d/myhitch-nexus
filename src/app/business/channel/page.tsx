@@ -66,6 +66,8 @@ export default function BusinessChannelPage() {
         {/* Identity */}
         <Card className="overflow-hidden">
           <Poster
+            src={channel.bannerUrl}
+            alt={channel.name}
             gradient={channel.bannerGradient}
             seed={`${channel.id}-banner`}
             ratio="banner"
@@ -75,6 +77,7 @@ export default function BusinessChannelPage() {
             <Avatar
               name={channel.name}
               gradient={channel.avatarGradient}
+              src={channel.avatarUrl}
               size="xl"
               square
               verified={channel.verified}

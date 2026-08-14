@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="100%" height="100%">
+  <defs>
+    <linearGradient id="grad_live_asha_qa" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#451a03" />
+      <stop offset="50%" stop-color="#78350f" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <radialGradient id="glow_live_asha_qa" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+    <pattern id="pat_live_asha_qa" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 40 M 0 0 L 40 40" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.07" />
+    </pattern>
+    <linearGradient id="scrim_live_asha_qa" x1="0" y1="0" x2="0" y2="100%">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.2" />
+      <stop offset="50%" stop-color="#000000" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.9" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background base -->
+  <rect width="960" height="540" fill="url(#grad_live_asha_qa)" />
+  <rect width="960" height="540" fill="url(#pat_live_asha_qa)" />
+
+  <!-- Ambient light blobs -->
+  <circle cx="200" cy="150" r="280" fill="#451a03" filter="blur(80px)" opacity="0.6" />
+  <circle cx="760" cy="380" r="320" fill="#78350f" filter="blur(90px)" opacity="0.5" />
+
+  <!-- Visual Central Graphic -->
+  
+      <g transform="translate(480, 200)">
+        <rect x="-160" y="20" width="320" height="40" rx="4" fill="#78350f" stroke="#d97706" stroke-width="2" />
+        <rect x="-140" y="60" width="30" height="80" fill="#451a03" />
+        <rect x="110" y="60" width="30" height="80" fill="#451a03" />
+        <polygon points="-60,20 20,-40 60,-20 -20,20" fill="#d97706" stroke="#fbbf24" stroke-width="2" />
+        <circle cx="40" cy="-30" r="10" fill="#92400e" />
+        <path d="M-80 -20 Q -40 -60 0 -20 T 80 -20" fill="none" stroke="#fde68a" stroke-width="4" stroke-linecap="round" />
+      </g>
+    
+
+  <!-- Dark gradient scrim for legibility -->
+  <rect width="960" height="540" fill="url(#scrim_live_asha_qa)" />
+
+  <!-- Header Badge -->
+  
+  <g transform="translate(48, 48)">
+    <rect width="55" height="28" rx="6" fill="#000000" opacity="0.75" />
+    <text x="14" y="19" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="700" letter-spacing="1">Q&amp;A</text>
+  </g>
+  
+
+  <!-- Bottom title & description metadata -->
+  <g transform="translate(48, 440)">
+    <text x="0" y="0" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="30" font-weight="700" letter-spacing="-0.5">Workshop Q&amp;A</text>
+    
+    <text x="0" y="32" fill="#cbd5e1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="400">Tools, Jigs and Project Questions</text>
+    
+  </g>
+</svg>

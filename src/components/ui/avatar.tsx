@@ -16,6 +16,7 @@ const SIZES = {
 export interface AvatarProps {
   name: string;
   gradient?: [string, string];
+  src?: string;
   size?: keyof typeof SIZES;
   verified?: boolean;
   square?: boolean;
@@ -23,32 +24,48 @@ export interface AvatarProps {
 }
 
 /**
- * No remote avatar images exist in this build, so identity is carried by a
- * deterministic gradient + initials. Same input always renders the same chip.
+ * Renders avatar image if available, falling back to a deterministic gradient + initials.
  */
 export function Avatar({
   name,
   gradient = ["#33373F", "#0D0E11"],
+  src,
   size = "md",
   verified,
   square,
   className,
 }: AvatarProps) {
+  const [imageError, setImageError] = React.useState(false);
+  const hasValidImage = Boolean(src) && !imageError;
+
   return (
     <span className={cn("relative inline-flex shrink-0", className)}>
-      <span
-        aria-hidden
-        className={cn(
-          "inline-flex items-center justify-center font-semibold text-white/95 ring-1 ring-inset ring-white/10",
-          SIZES[size],
-          square ? "rounded" : "rounded-full",
-        )}
-        style={{
-          backgroundImage: `linear-gradient(140deg, ${gradient[0]}, ${gradient[1]})`,
-        }}
-      >
-        {initials(name)}
-      </span>
+      {hasValidImage ? (
+        <img
+          src={src}
+          alt={name}
+          onError={() => setImageError(true)}
+          className={cn(
+            "object-cover ring-1 ring-inset ring-white/10",
+            SIZES[size],
+            square ? "rounded" : "rounded-full",
+          )}
+        />
+      ) : (
+        <span
+          aria-hidden
+          className={cn(
+            "inline-flex items-center justify-center font-semibold text-white/95 ring-1 ring-inset ring-white/10",
+            SIZES[size],
+            square ? "rounded" : "rounded-full",
+          )}
+          style={{
+            backgroundImage: `linear-gradient(140deg, ${gradient[0]}, ${gradient[1]})`,
+          }}
+        >
+          {initials(name)}
+        </span>
+      )}
       <span className="sr-only">{name}</span>
       {verified ? (
         <IconCircleCheckFilled

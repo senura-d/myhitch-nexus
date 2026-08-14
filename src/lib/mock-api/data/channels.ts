@@ -10,7 +10,7 @@ export const CHANNEL_KIND_LABELS: Record<ChannelKind, string> = {
   news: "News organisation",
 };
 
-export const channels: Channel[] = [
+const rawChannels: Channel[] = [
   {
     id: "ch_northlight",
     handle: "northlight",
@@ -28,6 +28,8 @@ export const channels: Channel[] = [
     joinedAt: "2019-03-14T09:00:00.000Z",
     bannerGradient: ["#2A1B4D", "#0D1424"],
     avatarGradient: ["#8B5CF6", "#4C2889"],
+    avatarUrl: "/images/avatars/ch_northlight.svg",
+    bannerUrl: "/images/banners/ch_northlight.svg",
     links: [
       { label: "northlightpictures.example", href: "#" },
       { label: "Press kit", href: "#" },
@@ -52,6 +54,8 @@ export const channels: Channel[] = [
     joinedAt: "2020-06-02T09:00:00.000Z",
     bannerGradient: ["#0F3D4C", "#08121A"],
     avatarGradient: ["#22D3EE", "#0E7490"],
+    avatarUrl: "/images/avatars/ch_helio.svg",
+    bannerUrl: "/images/banners/ch_helio.svg",
     links: [
       { label: "heliomotors.example", href: "#" },
       { label: "Configure a vehicle", href: "#" },
@@ -76,6 +80,8 @@ export const channels: Channel[] = [
     joinedAt: "2018-11-21T09:00:00.000Z",
     bannerGradient: ["#1C3566", "#080D18"],
     avatarGradient: ["#5B8DEF", "#243F80"],
+    avatarUrl: "/images/avatars/ch_mara.svg",
+    bannerUrl: "/images/banners/ch_mara.svg",
     links: [{ label: "Kit list", href: "#" }],
     verificationStatus: "verified",
     contactEmail: "hello@marasolace.example",
@@ -97,6 +103,8 @@ export const channels: Channel[] = [
     joinedAt: "2021-01-18T09:00:00.000Z",
     bannerGradient: ["#123A2E", "#07130F"],
     avatarGradient: ["#34C77B", "#12694A"],
+    avatarUrl: "/images/avatars/ch_meridian.svg",
+    bannerUrl: "/images/banners/ch_meridian.svg",
     links: [
       { label: "meridian.example/courses", href: "#" },
       { label: "Admissions", href: "#" },
@@ -121,6 +129,8 @@ export const channels: Channel[] = [
     joinedAt: "2019-09-05T09:00:00.000Z",
     bannerGradient: ["#1B2A4D", "#080D18"],
     avatarGradient: ["#38A8E0", "#175E85"],
+    avatarUrl: "/images/avatars/ch_ledger.svg",
+    bannerUrl: "/images/banners/ch_ledger.svg",
     links: [{ label: "Support the newsroom", href: "#" }],
     verificationStatus: "verified",
     contactEmail: "newsdesk@theledger.example",
@@ -142,6 +152,8 @@ export const channels: Channel[] = [
     joinedAt: "2022-04-11T09:00:00.000Z",
     bannerGradient: ["#1E3350", "#0A1119"],
     avatarGradient: ["#5B8DEF", "#2A4E8F"],
+    avatarUrl: "/images/avatars/ch_council.svg",
+    bannerUrl: "/images/banners/ch_council.svg",
     links: [{ label: "harborough.gov.example", href: "#" }],
     verificationStatus: "verified",
     contactEmail: "communications@harborough.gov.example",
@@ -163,6 +175,8 @@ export const channels: Channel[] = [
     joinedAt: "2021-07-30T09:00:00.000Z",
     bannerGradient: ["#0C3B44", "#05161A"],
     avatarGradient: ["#2DD4BF", "#0F766E"],
+    avatarUrl: "/images/avatars/ch_tideline.svg",
+    bannerUrl: "/images/banners/ch_tideline.svg",
     links: [{ label: "Donate", href: "#" }],
     verificationStatus: "verified",
     contactEmail: "media@tideline.example",
@@ -184,6 +198,8 @@ export const channels: Channel[] = [
     joinedAt: "2022-02-09T09:00:00.000Z",
     bannerGradient: ["#43301A", "#150E07"],
     avatarGradient: ["#E5A83B", "#96661A"],
+    avatarUrl: "/images/avatars/ch_asha.svg",
+    bannerUrl: "/images/banners/ch_asha.svg",
     links: [{ label: "Tool list", href: "#" }],
     verificationStatus: "pending",
     contactEmail: "asha@ashabuilds.example",
@@ -205,6 +221,8 @@ export const channels: Channel[] = [
     joinedAt: "2021-11-15T09:00:00.000Z",
     bannerGradient: ["#144B3C", "#06160F"],
     avatarGradient: ["#4ADE80", "#15803D"],
+    avatarUrl: "/images/avatars/ch_verge.svg",
+    bannerUrl: "/images/banners/ch_verge.svg",
     links: [{ label: "Work with us", href: "#" }],
     verificationStatus: "verified",
     contactEmail: "studio@vergetravel.example",
@@ -226,11 +244,15 @@ export const channels: Channel[] = [
     joinedAt: "2020-02-27T09:00:00.000Z",
     bannerGradient: ["#3B1638", "#120711"],
     avatarGradient: ["#EC6AA8", "#9D2C6B"],
+    avatarUrl: "/images/avatars/ch_orbit.svg",
+    bannerUrl: "/images/banners/ch_orbit.svg",
     links: [{ label: "Submit an artist", href: "#" }],
     verificationStatus: "verified",
     contactEmail: "bookings@orbitsessions.example",
   },
 ];
+
+export const channels: Channel[] = rawChannels;
 
 export const channelById = (id: string) =>
   channels.find((channel) => channel.id === id);

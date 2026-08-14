@@ -81,6 +81,8 @@ export interface MockStore {
   /** Simulated request country — the geo-restriction demo toggles this. */
   requestCountry: string;
   seq: number;
+  /** Whether the mock session is authenticated. False = guest/unauthenticated. */
+  loggedIn: boolean;
 }
 
 function seed(): MockStore {
@@ -115,6 +117,7 @@ function seed(): MockStore {
     unlocked: {},
     requestCountry: "GB",
     seq: 1000,
+    loggedIn: false,
   };
 }
 

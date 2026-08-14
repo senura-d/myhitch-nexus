@@ -19,7 +19,7 @@ export const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
  * through the mock store, which is the point of the acceptance criterion that
  * "new categories can be added without a code change".
  */
-export const categories: Category[] = [
+const rawCategories: Category[] = [
   {
     id: "cat_brand_film",
     slug: "brand-films",
@@ -30,6 +30,7 @@ export const categories: Category[] = [
     featured: true,
     videoCount: 4,
     accentToken: 1,
+    imageUrl: "/images/categories/cat_brand_film.svg",
   },
   {
     id: "cat_product_launch",
@@ -40,6 +41,7 @@ export const categories: Category[] = [
     featured: false,
     videoCount: 3,
     accentToken: 5,
+    imageUrl: "/images/categories/cat_product_launch.svg",
   },
   {
     id: "cat_feature_film",
@@ -50,6 +52,7 @@ export const categories: Category[] = [
     featured: true,
     videoCount: 4,
     accentToken: 4,
+    imageUrl: "/images/categories/cat_feature_film.svg",
   },
   {
     id: "cat_short_film",
@@ -60,6 +63,7 @@ export const categories: Category[] = [
     featured: false,
     videoCount: 2,
     accentToken: 6,
+    imageUrl: "/images/categories/cat_short_film.svg",
   },
   {
     id: "cat_series",
@@ -70,6 +74,7 @@ export const categories: Category[] = [
     featured: true,
     videoCount: 3,
     accentToken: 2,
+    imageUrl: "/images/categories/cat_series.svg",
   },
   {
     id: "cat_music",
@@ -80,6 +85,7 @@ export const categories: Category[] = [
     featured: false,
     videoCount: 2,
     accentToken: 6,
+    imageUrl: "/images/categories/cat_music.svg",
   },
   {
     id: "cat_courses",
@@ -90,6 +96,7 @@ export const categories: Category[] = [
     featured: true,
     videoCount: 4,
     accentToken: 3,
+    imageUrl: "/images/categories/cat_courses.svg",
   },
   {
     id: "cat_skills",
@@ -99,57 +106,52 @@ export const categories: Category[] = [
     contentType: "education",
     featured: false,
     videoCount: 2,
-    accentToken: 3,
-  },
-  {
-    id: "cat_news_bulletins",
-    slug: "news-bulletins",
-    name: "News bulletins",
-    description: "Daily and breaking news video.",
-    contentType: "news",
-    featured: true,
-    videoCount: 3,
-    accentToken: 2,
+    accentToken: 1,
+    imageUrl: "/images/categories/cat_skills.svg",
   },
   {
     id: "cat_investigations",
     slug: "investigations",
     name: "Investigations",
-    description: "Long-form investigative journalism and documentary.",
+    description: "Long-form investigative journalism and data audits.",
     contentType: "documentary",
     featured: true,
     videoCount: 3,
+    accentToken: 5,
+    imageUrl: "/images/categories/cat_investigations.svg",
+  },
+  {
+    id: "cat_news_bulletins",
+    slug: "news-bulletins",
+    name: "News bulletins",
+    description: "Daily bulletins and breaking news analysis.",
+    contentType: "news",
+    featured: false,
+    videoCount: 3,
     accentToken: 4,
+    imageUrl: "/images/categories/cat_news_bulletins.svg",
   },
   {
     id: "cat_conferences",
     slug: "conferences",
-    name: "Conferences & keynotes",
-    description: "Streamed and recorded industry events.",
+    name: "Conferences & events",
+    description: "Keynotes, industry conferences and product events.",
     contentType: "live",
     featured: true,
-    videoCount: 3,
-    accentToken: 1,
-  },
-  {
-    id: "cat_sport",
-    slug: "sport",
-    name: "Sport & fixtures",
-    description: "Ticketed and subscriber-only live sport.",
-    contentType: "live",
-    featured: false,
-    videoCount: 2,
-    accentToken: 5,
+    videoCount: 4,
+    accentToken: 2,
+    imageUrl: "/images/categories/cat_conferences.svg",
   },
   {
     id: "cat_destinations",
     slug: "destinations",
-    name: "Destinations",
-    description: "Destination films and travel guides.",
+    name: "Destinations & places",
+    description: "Tourism films and regional guides.",
     contentType: "tourism",
     featured: false,
     videoCount: 3,
     accentToken: 3,
+    imageUrl: "/images/categories/cat_destinations.svg",
   },
   {
     id: "cat_public_notices",
@@ -160,6 +162,7 @@ export const categories: Category[] = [
     featured: false,
     videoCount: 3,
     accentToken: 2,
+    imageUrl: "/images/categories/cat_public_notices.svg",
   },
   {
     id: "cat_impact",
@@ -170,6 +173,7 @@ export const categories: Category[] = [
     featured: false,
     videoCount: 3,
     accentToken: 6,
+    imageUrl: "/images/categories/cat_impact.svg",
   },
   {
     id: "cat_creators",
@@ -180,8 +184,11 @@ export const categories: Category[] = [
     featured: true,
     videoCount: 4,
     accentToken: 1,
+    imageUrl: "/images/categories/cat_creators.svg",
   },
 ];
+
+export const categories: Category[] = rawCategories;
 
 export const categoryBySlug = (slug: string) =>
   categories.find((category) => category.slug === slug);

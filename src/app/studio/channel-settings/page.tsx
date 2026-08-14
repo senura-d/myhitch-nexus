@@ -1,6 +1,6 @@
 "use client";
 
-import { IconCheck, IconExternalLink } from "@tabler/icons-react";
+import { IconCheck, IconExternalLink, IconPencil } from "@tabler/icons-react";
 import * as React from "react";
 import { PageBody, PageHeader } from "@/components/layout/workspace-shell";
 import { Avatar } from "@/components/ui/avatar";
@@ -12,7 +12,7 @@ import { MultiSelect } from "@/components/ui/multi-select";
 import { useToast } from "@/components/ui/toast";
 import { Poster } from "@/components/video/poster";
 import { CHANNEL_KIND_LABELS } from "@/lib/mock-api/data/channels";
-import { useChannel, useCurrentUser } from "@/lib/mock-api/hooks";
+import { useChannel, useCurrentUser, useUpdateChannel } from "@/lib/mock-api/hooks";
 import { compactNumber, formatDate } from "@/lib/utils";
 
 const LANGUAGES = [
@@ -23,7 +23,27 @@ export default function ChannelSettingsPage() {
   const { data: user } = useCurrentUser();
   const channelId = user?.channelId ?? "ch_mara";
   const { data: channel } = useChannel(channelId);
+  const updateChannel = useUpdateChannel(channelId);
   const { toast } = useToast();
+
+  const bannerInputRef = React.useRef<HTMLInputElement>(null);
+  const avatarInputRef = React.useRef<HTMLInputElement>(null);
+
+  const pickImage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    field: "bannerUrl" | "avatarUrl",
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    updateChannel.mutate(
+      { [field]: URL.createObjectURL(file) },
+      {
+        onSuccess: () =>
+          toast({ title: field === "bannerUrl" ? "Banner updated" : "Avatar updated" }),
+      },
+    );
+    event.target.value = "";
+  };
 
   const [name, setName] = React.useState("");
   const [handle, setHandle] = React.useState("");
@@ -69,19 +89,48 @@ export default function ChannelSettingsPage() {
         <Card>
           <CardHeader
             title="Branding"
-            description="Banner and avatar are generated from your channel identity in this build — image upload is out of scope."
+            description="Update the banner and avatar shown on your public channel page."
           />
           <CardBody className="space-y-4">
+            <input
+              ref={bannerInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(event) => pickImage(event, "bannerUrl")}
+            />
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(event) => pickImage(event, "avatarUrl")}
+            />
             <div className="overflow-hidden rounded-lg border border-border">
-              <Poster
-                gradient={channel.bannerGradient}
-                seed={`${channel.id}-banner`}
-                ratio="banner"
-              />
+              <div className="relative">
+                <Poster
+                  src={channel.bannerUrl}
+                  alt={channel.name}
+                  gradient={channel.bannerGradient}
+                  seed={`${channel.id}-banner`}
+                  ratio="banner"
+                />
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="absolute right-3 top-3"
+                  loading={updateChannel.isPending}
+                  onClick={() => bannerInputRef.current?.click()}
+                >
+                  <IconPencil />
+                  Change banner
+                </Button>
+              </div>
               <div className="flex flex-wrap items-center gap-4 bg-surface-2 p-4">
                 <Avatar
                   name={channel.name}
                   gradient={channel.avatarGradient}
+                  src={channel.avatarUrl}
                   size="xl"
                   square
                   verified={channel.verified}
@@ -91,6 +140,16 @@ export default function ChannelSettingsPage() {
                   <p className="text-xs text-fg-muted nx-tnum">
                     @{channel.handle} · {compactNumber(channel.followers)} followers
                   </p>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="mt-2"
+                    loading={updateChannel.isPending}
+                    onClick={() => avatarInputRef.current?.click()}
+                  >
+                    <IconPencil />
+                    Change avatar
+                  </Button>
                 </div>
                 <Badge tone="accent" size="sm">
                   {CHANNEL_KIND_LABELS[channel.kind]}
