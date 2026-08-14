@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  IconArrowLeft,
   IconBrandApple,
   IconBrandGoogle,
   IconBuildingBank,
@@ -267,6 +268,14 @@ export default function RegisterPage() {
 
   return (
     <div>
+      <Link
+        href="/"
+        className="group mb-5 inline-flex items-center gap-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+      >
+        <IconArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+        <span>Back to Home</span>
+      </Link>
+
       <div className="mb-6">
         <h1 className="font-display text-2xl font-semibold text-fg">
           Create your account

@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  IconArrowLeft,
   IconBrandApple,
   IconBrandGoogle,
   IconMail,
@@ -49,6 +50,14 @@ export default function LoginPage() {
 
   return (
     <div>
+      <Link
+        href="/"
+        className="group mb-5 inline-flex items-center gap-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+      >
+        <IconArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" />
+        <span>Back to Home</span>
+      </Link>
+
       <h1 className="font-display text-2xl font-semibold text-fg">Sign in</h1>
       <p className="mt-1.5 text-sm text-fg-muted">
         New here?{" "}
