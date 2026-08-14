@@ -1,4 +1,4 @@
-import { assetPath } from "@/lib/utils";
+import { AuthBackdrop } from "@/components/layout/auth-backdrop";
 
 export default function AuthLayout({
   children,
@@ -10,12 +10,7 @@ export default function AuthLayout({
       {/* Editorial panel — desktop only. Keeps the form column uncluttered. */}
       <aside className="relative hidden overflow-hidden lg:block">
         {/* Backdrop photograph */}
-        <img
-          src={assetPath("/images/brand/auth-backdrop.png")}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 size-full object-cover object-center"
-        />
+        <AuthBackdrop />
         {/* Dark scrim so text stays legible over the image */}
         <div
           aria-hidden
