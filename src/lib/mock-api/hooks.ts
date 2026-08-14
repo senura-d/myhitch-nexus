@@ -721,6 +721,14 @@ export function useUpdateConfigTable() {
 export const useCurrentUser = () =>
   useQuery({ queryKey: qk.user, queryFn: api.getCurrentUser });
 
+export function useLogin() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: api.login,
+    onSuccess: () => client.invalidateQueries({ queryKey: qk.user }),
+  });
+}
+
 export function useUpdateUser() {
   const client = useQueryClient();
   return useMutation({

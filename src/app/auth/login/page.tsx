@@ -9,13 +9,12 @@ import {
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import * as React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Checkbox, Field, Input } from "@/components/ui/field";
 import { useToast } from "@/components/ui/toast";
-import { login } from "@/lib/mock-api";
+import { useLogin } from "@/lib/mock-api/hooks";
 
 const schema = z.object({
   email: z.string().min(1, "Enter your email address").email("That does not look like an email address"),
@@ -28,7 +27,7 @@ type FormValues = z.infer<typeof schema>;
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const [submitting, setSubmitting] = React.useState(false);
+  const login = useLogin();
 
   const {
     register,
@@ -40,9 +39,7 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (values: FormValues) => {
-    setSubmitting(true);
-    await login(values.email);
-    setSubmitting(false);
+    await login.mutateAsync(values.email);
     toast({
       title: "Signed in",
       description: "Mock session — no credentials were sent anywhere.",
@@ -122,7 +119,7 @@ export default function LoginPage() {
 
         <Checkbox label="Keep me signed in on this device" {...register("remember")} />
 
-        <Button type="submit" variant="primary" block loading={submitting}>
+        <Button type="submit" variant="primary" block loading={login.isPending}>
           Sign in
         </Button>
       </form>

@@ -60,10 +60,9 @@ export function BootSplash() {
       />
 
       <div className="relative flex flex-col items-center gap-6">
-        <NexusLoader size="lg" label="Loading MYHitch Nexus" />
+        <NexusLoader size="lg" showLogo label="Loading MYHitch Nexus" />
 
         <div className="text-center">
-
           <p className="mt-1 text-xs text-fg-subtle">
             Preparing your catalogue…
           </p>

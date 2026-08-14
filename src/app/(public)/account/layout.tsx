@@ -10,6 +10,7 @@ import {
   IconClock,
   IconUser,
 } from "@tabler/icons-react";
+import { AuthGuard } from "@/components/layout/auth-guard";
 import { NavTabs } from "@/components/ui/tabs";
 
 const TABS = [
@@ -29,15 +30,17 @@ export default function AccountLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto max-w-[86rem] px-4 py-6 sm:px-6 lg:px-8">
-      <h1 className="font-display text-2xl font-semibold text-fg sm:text-3xl">
-        Your account
-      </h1>
-      <p className="mt-1.5 text-sm text-fg-muted">
-        Profiles, viewing activity, purchases and preferences.
-      </p>
-      <NavTabs items={TABS} className="mt-5" />
-      <div className="py-6">{children}</div>
-    </div>
+    <AuthGuard>
+      <div className="mx-auto max-w-[86rem] px-4 py-6 sm:px-6 lg:px-8">
+        <h1 className="font-display text-2xl font-semibold text-fg sm:text-3xl">
+          Your account
+        </h1>
+        <p className="mt-1.5 text-sm text-fg-muted">
+          Profiles, viewing activity, purchases and preferences.
+        </p>
+        <NavTabs items={TABS} className="mt-5" />
+        <div className="py-6">{children}</div>
+      </div>
+    </AuthGuard>
   );
 }

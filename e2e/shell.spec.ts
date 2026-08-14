@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
+import { login } from "./helpers";
 
 /**
  * App-shell behaviour: navigation, first-load splash, and the states shown
@@ -9,12 +10,20 @@ import { expect, test, type Page } from "@playwright/test";
  * The site nav is a bar on desktop and a slide-down panel behind a hamburger
  * on mobile. Both carry the same links, so tests ask for "the nav" and let
  * this resolve which one is actually on screen.
+ *
+ * Right after navigation the boot splash can still be up, during which
+ * neither element is visible yet — wait for one of them rather than taking a
+ * single isVisible() snapshot, or a fresh page load reads as "mobile" and the
+ * (never-visible-on-desktop) toggle button hangs until the test times out.
  */
 async function siteNav(page: Page) {
   const desktop = page.getByRole("navigation", { name: "Primary" });
+  const toggle = page.getByRole("button", { name: "Open navigation" });
+
+  await expect(desktop.or(toggle)).toBeVisible();
   if (await desktop.isVisible()) return desktop;
 
-  await page.getByRole("button", { name: "Open navigation" }).click();
+  await toggle.click();
   const mobile = page.getByRole("navigation", { name: "Mobile" });
   await expect(mobile).toBeVisible();
   return mobile;
@@ -49,6 +58,8 @@ test.describe("Navigation", () => {
   });
 
   test("workspaces offer their own way back to the site", async ({ page }) => {
+    // /admin/* redirects guests to /auth/login.
+    await login(page);
     await page.goto("/admin/reviews/");
 
     // The workspace rail is behind a toggle on small screens.

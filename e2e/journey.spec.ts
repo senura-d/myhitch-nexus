@@ -1,4 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+import { dismissDevOverlay, login } from "./helpers";
 
 /**
  * Covers the end-to-end journey from §13.9 of the build spec:
@@ -11,14 +12,15 @@ import { expect, test, type Page } from "@playwright/test";
  * to observe a *previous* step's write must stay within one page load and
  * navigate by clicking (client-side routing). Tests that only read the seeded
  * fixtures are free to use page.goto().
+ *
+ * Every step here assumes a signed-in viewer (video pages, Studio, Business
+ * and Admin all redirect guests to /auth/login), so the whole file signs in
+ * once up front.
  */
 
-async function dismissDevOverlay(page: Page) {
-  // Next's dev indicator can sit over bottom-anchored controls.
-  await page
-    .addStyleTag({ content: "nextjs-portal{display:none!important}" })
-    .catch(() => {});
-}
+test.beforeEach(async ({ page }) => {
+  await login(page);
+});
 
 test.describe("Public discovery", () => {
   test("homepage renders the hero and content rails", async ({ page }) => {

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { NexusMark } from "./logo";
 
 /**
  * The loading mark: the three nodes from the Nexus logo lighting in sequence
@@ -11,11 +12,13 @@ export function NexusLoader({
   size = "md",
   label = "Loading",
   showBar = true,
+  showLogo = false,
   className,
 }: {
   size?: "sm" | "md" | "lg";
   label?: string;
   showBar?: boolean;
+  showLogo?: boolean;
   className?: string;
 }) {
   const dimension = { sm: 40, md: 64, lg: 88 }[size];
@@ -26,6 +29,16 @@ export function NexusLoader({
       aria-live="polite"
       className={cn("flex flex-col items-center gap-4", className)}
     >
+      {showLogo ? (
+        <NexusMark
+          className={cn(
+            size === "sm" && "h-7",
+            size === "md" && "h-10",
+            size === "lg" && "h-14",
+            "w-auto drop-shadow-[0_0_20px_rgba(56,189,248,0.25)]",
+          )}
+        />
+      ) : null}
       <div className="relative" style={{ width: dimension, height: dimension }}>
         {/* Sweeping ring */}
         <span
