@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { assetPath } from "@/lib/utils";
 
 export default function AuthLayout({
   children,
@@ -10,14 +10,11 @@ export default function AuthLayout({
       {/* Editorial panel — desktop only. Keeps the form column uncluttered. */}
       <aside className="relative hidden overflow-hidden lg:block">
         {/* Backdrop photograph */}
-        <Image
-          src="/images/brand/auth-backdrop.png"
+        <img
+          src={assetPath("/images/brand/auth-backdrop.png")}
           alt=""
           aria-hidden
-          fill
-          priority
-          className="object-cover object-center"
-          sizes="50vw"
+          className="absolute inset-0 size-full object-cover object-center"
         />
         {/* Dark scrim so text stays legible over the image */}
         <div
