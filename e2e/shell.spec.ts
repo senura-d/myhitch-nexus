@@ -90,7 +90,7 @@ test.describe("First-load experience", () => {
     // Server-rendered, not injected after hydration — otherwise there would be
     // a blank screen while the bundle downloads.
     expect(html).toContain("Preparing your catalogue");
-    expect(html).toContain("animate-ring-spin");
+    expect(html).toContain("animate-node-pulse");
   });
 
   test("the splash clears itself and does not trap clicks", async ({ page }) => {

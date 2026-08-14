@@ -2,8 +2,9 @@ import { cn } from "@/lib/utils";
 import { NexusMark } from "./logo";
 
 /**
- * The loading mark: the brand logo centred in a spinning ring, over an
- * indeterminate sweep bar.
+ * The loading mark: the brand logo breathing gently, over an indeterminate
+ * sweep bar. No ring or spinner — just the mark, on the page's own light
+ * background.
  *
  * Pure CSS so it works before hydration — the boot splash renders in the
  * server HTML and animates while the bundle is still downloading.
@@ -19,33 +20,20 @@ export function NexusLoader({
   showBar?: boolean;
   className?: string;
 }) {
-  const dimension = { sm: 40, md: 64, lg: 88 }[size];
-
   return (
     <div
       role="status"
       aria-live="polite"
       className={cn("flex flex-col items-center gap-4", className)}
     >
-      <div
-        className="relative flex items-center justify-center"
-        style={{ width: dimension, height: dimension }}
-      >
-        {/* Sweeping ring */}
-        <span
-          aria-hidden
-          className="absolute inset-0 rounded-full border-2 border-accent/15 border-t-accent motion-safe:animate-ring-spin"
-        />
-
-        <NexusMark
-          className={cn(
-            size === "sm" && "h-5",
-            size === "md" && "h-8",
-            size === "lg" && "h-11",
-            "w-auto drop-shadow-[0_0_20px_rgba(56,189,248,0.25)]",
-          )}
-        />
-      </div>
+      <NexusMark
+        className={cn(
+          size === "sm" && "h-5",
+          size === "md" && "h-8",
+          size === "lg" && "h-11",
+          "w-auto motion-safe:animate-node-pulse",
+        )}
+      />
 
       {showBar ? (
         <span

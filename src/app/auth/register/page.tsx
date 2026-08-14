@@ -20,6 +20,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
+import { NexusMark } from "@/components/layout/logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
@@ -268,6 +269,12 @@ export default function RegisterPage() {
 
   return (
     <div>
+      <div className="mb-6">
+        <Link href="/" className="inline-block" aria-label="MYHitch Nexus Home">
+          <NexusMark className="h-10 w-auto" />
+        </Link>
+      </div>
+
       <Link
         href="/"
         className="group mb-5 inline-flex items-center gap-2 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
