@@ -316,6 +316,7 @@ export default function RegisterPage() {
                 <RadioCard
                   key={item.value}
                   name="role"
+                  size="sm"
                   value={item.value}
                   checked={role === item.value}
                   onChange={(value) => setRole(value as UserRole)}

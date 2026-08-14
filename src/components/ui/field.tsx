@@ -228,6 +228,7 @@ export interface RadioCardProps {
   description?: React.ReactNode;
   icon?: React.ReactNode;
   disabled?: boolean;
+  size?: "sm" | "md";
 }
 
 export function RadioCard({
@@ -239,11 +240,15 @@ export function RadioCard({
   description,
   icon,
   disabled,
+  size = "md",
 }: RadioCardProps) {
+  const isSm = size === "sm";
+
   return (
     <label
       className={cn(
-        "group relative flex cursor-pointer gap-3 rounded border p-3.5 transition-colors",
+        "group relative flex cursor-pointer rounded border transition-colors",
+        isSm ? "gap-2.5 p-2.5 sm:p-3" : "gap-3 p-3.5",
         checked
           ? "border-accent bg-accent/[0.07]"
           : "border-border bg-surface-2 hover:border-border-strong hover:bg-surface-3",
@@ -262,7 +267,7 @@ export function RadioCard({
       {icon ? (
         <span
           className={cn(
-            "mt-0.5 [&_svg]:size-5",
+            isSm ? "mt-0.5 [&_svg]:size-4" : "mt-0.5 [&_svg]:size-5",
             checked ? "text-accent" : "text-fg-muted",
           )}
         >
@@ -282,9 +287,16 @@ export function RadioCard({
         </span>
       )}
       <div className="min-w-0">
-        <p className="text-sm font-medium text-fg">{title}</p>
+        <p className={cn("font-medium text-fg", isSm ? "text-xs sm:text-sm" : "text-sm")}>
+          {title}
+        </p>
         {description ? (
-          <p className="mt-0.5 text-xs leading-relaxed text-fg-muted">
+          <p
+            className={cn(
+              "leading-snug text-fg-muted",
+              isSm ? "mt-0.5 text-2xs sm:text-xs" : "mt-0.5 text-xs leading-relaxed",
+            )}
+          >
             {description}
           </p>
         ) : null}
