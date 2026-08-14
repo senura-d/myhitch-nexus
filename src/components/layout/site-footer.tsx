@@ -89,9 +89,6 @@ export function SiteFooter() {
         <div className="mt-10 flex flex-col gap-3 border-t border-border pt-6 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
           <p>© 2026 MYHitch Nexus.</p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
-            <Link href="/admin" className="transition-colors hover:text-fg">
-              Admin console
-            </Link>
             <span>Terms</span>
             <span>Privacy</span>
             <span>Accessibility</span>
