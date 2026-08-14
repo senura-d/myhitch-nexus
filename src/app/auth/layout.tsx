@@ -1,6 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
-import { NexusMark } from "@/components/layout/logo";
 
 export default function AuthLayout({
   children,
@@ -31,11 +29,7 @@ export default function AuthLayout({
           }}
         />
 
-        <div className="absolute inset-0 flex flex-col justify-between p-10">
-          <Link href="/" className="flex items-center gap-2.5" aria-label="MYHitch Nexus Home">
-            <NexusMark className="h-10 w-auto" />
-          </Link>
-
+        <div className="absolute inset-0 flex flex-col justify-end p-10">
           <div className="max-w-md">
             <h2 className="font-display text-3xl font-semibold leading-tight text-white">
               One account. Every kind of video.
