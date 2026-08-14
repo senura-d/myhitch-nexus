@@ -71,7 +71,7 @@ export function Poster({
             imgClassName,
           )}
         />
-      ) : null}
+      ) : (
         <svg
           aria-hidden
           viewBox="0 0 100 100"
@@ -120,6 +120,7 @@ export function Poster({
             </g>
           ) : null}
         </svg>
+      )}
       {children}
     </div>
   );
