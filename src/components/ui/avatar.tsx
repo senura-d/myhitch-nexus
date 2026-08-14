@@ -2,7 +2,7 @@
 
 import { IconCircleCheckFilled } from "@tabler/icons-react";
 import * as React from "react";
-import { cn, initials } from "@/lib/utils";
+import { assetPath, cn, initials } from "@/lib/utils";
 
 const SIZES = {
   xs: "size-6 text-2xs",
@@ -42,7 +42,7 @@ export function Avatar({
     <span className={cn("relative inline-flex shrink-0", className)}>
       {hasValidImage ? (
         <img
-          src={src}
+          src={assetPath(src!)}
           alt={name}
           onError={() => setImageError(true)}
           className={cn(

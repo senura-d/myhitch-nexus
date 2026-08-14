@@ -25,6 +25,24 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-GB" data-theme="light" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var t = localStorage.getItem('nexus-theme-v2');
+                if (t === 'dark') {
+                  document.documentElement.dataset.theme = 'dark';
+                } else {
+                  document.documentElement.dataset.theme = 'light';
+                }
+              } catch (e) {
+                document.documentElement.dataset.theme = 'light';
+              }
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-dvh antialiased">
         <a
           href="#main"

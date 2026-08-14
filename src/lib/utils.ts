@@ -222,3 +222,33 @@ export function mockId(prefix: string): string {
   idCounter += 1;
   return `${prefix}_${idCounter.toString().padStart(4, "0")}`;
 }
+
+export const BASE_PATH =
+  process.env.NEXT_PUBLIC_BASE_PATH ??
+  (typeof window !== "undefined" && window.location.pathname.startsWith("/myhitch-nexus")
+    ? "/myhitch-nexus"
+    : process.env.GITHUB_ACTIONS === "true"
+      ? "/myhitch-nexus"
+      : "");
+
+/**
+ * Resolves static asset paths (e.g. `/images/brand/logo.png`) to respect the
+ * deployment base path on GitHub Pages (`/myhitch-nexus`).
+ */
+export function assetPath(path: string): string {
+  if (!path) return "";
+  if (
+    path.startsWith("http://") ||
+    path.startsWith("https://") ||
+    path.startsWith("data:") ||
+    path.startsWith("blob:")
+  ) {
+    return path;
+  }
+  const clean = path.startsWith("/") ? path : `/${path}`;
+  if (BASE_PATH && !clean.startsWith(BASE_PATH)) {
+    return `${BASE_PATH}${clean}`;
+  }
+  return clean;
+}
+

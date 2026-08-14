@@ -26,13 +26,18 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = React.useState<Theme>("light");
 
   React.useEffect(() => {
-    const stored = window.localStorage.getItem("nx-theme") as Theme | null;
-    if (stored === "light" || stored === "dark") setThemeState(stored);
+    const stored = window.localStorage.getItem("nexus-theme-v2") as Theme | null;
+    if (stored === "light" || stored === "dark") {
+      setThemeState(stored);
+    } else {
+      setThemeState("light");
+      document.documentElement.dataset.theme = "light";
+    }
   }, []);
 
   React.useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem("nx-theme", theme);
+    window.localStorage.setItem("nexus-theme-v2", theme);
   }, [theme]);
 
   const value = React.useMemo<ThemeContextValue>(

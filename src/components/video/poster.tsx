@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn, hashString } from "@/lib/utils";
+import { assetPath, cn, hashString } from "@/lib/utils";
 
 /**
  * All artwork in this build is generated, not fetched — see §12. A poster is a
@@ -61,7 +61,7 @@ export function Poster({
     >
       {hasValidImage ? (
         <img
-          src={src}
+          src={assetPath(src!)}
           alt={alt}
           loading="lazy"
           decoding="async"
@@ -71,7 +71,7 @@ export function Poster({
             imgClassName,
           )}
         />
-      ) : (
+      ) : null}
         <svg
           aria-hidden
           viewBox="0 0 100 100"
@@ -120,7 +120,6 @@ export function Poster({
             </g>
           ) : null}
         </svg>
-      )}
       {children}
     </div>
   );
