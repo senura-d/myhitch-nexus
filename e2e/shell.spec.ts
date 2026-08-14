@@ -62,13 +62,18 @@ test.describe("Navigation", () => {
     await login(page);
     await page.goto("/admin/reviews/");
 
-    // The workspace rail is behind a toggle on small screens.
+    // The workspace rail is behind a toggle on small screens. Wait for one
+    // of the two states rather than a single isVisible() snapshot — right
+    // after navigation the boot splash can still be up, during which neither
+    // is visible yet.
     const railToggle = page.getByRole("button", {
       name: "Open workspace navigation",
     });
+    const backLink = page.getByRole("link", { name: /Back to Nexus/ });
+    await expect(railToggle.or(backLink)).toBeVisible();
     if (await railToggle.isVisible()) await railToggle.click();
 
-    await page.getByRole("link", { name: /Back to Nexus/ }).click();
+    await backLink.click();
     await expect(
       page.getByRole("heading", { name: "Continue watching" }),
     ).toBeVisible();

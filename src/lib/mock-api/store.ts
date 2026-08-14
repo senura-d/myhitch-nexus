@@ -85,6 +85,25 @@ export interface MockStore {
   loggedIn: boolean;
 }
 
+/**
+ * The rest of the store deliberately does not persist — a reload should
+ * reseed the catalogue, purchases, comments etc. back to a clean demo state.
+ * Login is the one exception: without this, AuthGuard'd routes (Studio,
+ * Admin, Business, Account, video pages) would sign a viewer back out on
+ * every refresh, direct link or new tab, which no real session behaves like.
+ */
+const LOGIN_STORAGE_KEY = "nx-logged-in";
+
+function readPersistedLogin(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.sessionStorage.getItem(LOGIN_STORAGE_KEY) === "true";
+}
+
+export function persistLogin(loggedIn: boolean) {
+  if (typeof window === "undefined") return;
+  window.sessionStorage.setItem(LOGIN_STORAGE_KEY, String(loggedIn));
+}
+
 function seed(): MockStore {
   return {
     videos: videos.map((video) => ({ ...video })),
@@ -117,7 +136,7 @@ function seed(): MockStore {
     unlocked: {},
     requestCountry: "GB",
     seq: 1000,
-    loggedIn: false,
+    loggedIn: readPersistedLogin(),
   };
 }
 

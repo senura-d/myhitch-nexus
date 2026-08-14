@@ -13,7 +13,7 @@ import { sleep } from "@/lib/utils";
 import { CONTENT_TYPE_LABELS } from "./data/categories";
 import { buildAdminTrend, buildCampaignSeries, buildCreatorAnalytics, buildRevenueSummary } from "./data/analytics";
 import { NOW, daysAhead } from "./data/videos";
-import { nextId, recordAudit, store } from "./store";
+import { nextId, persistLogin, recordAudit, store } from "./store";
 import type {
   AdminCase,
   AdminDashboardSummary,
@@ -1861,12 +1861,14 @@ export async function login(email: string): Promise<User> {
   await latency();
   store.user.email = email || store.user.email;
   store.loggedIn = true;
+  persistLogin(true);
   return clone(store.user);
 }
 
 export async function logout(): Promise<void> {
   await latency("fast");
   store.loggedIn = false;
+  persistLogin(false);
 }
 
 export { NOW };
