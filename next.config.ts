@@ -17,41 +17,8 @@ export const BASE_PATH =
   process.env.NEXT_PUBLIC_BASE_PATH ??
   (process.env.GITHUB_ACTIONS === "true" ? "/myhitch-nexus" : "");
 
-// `headers()` is only supported by the Next.js dev server. Static exports
-// (output: "export") are served by CDNs or GitHub Pages where caching is
-// configured at the hosting layer. We only attach the headers config in dev mode.
-const isDev = process.env.NODE_ENV !== "production";
-
 const nextConfig: NextConfig = {
-  ...(isDev
-    ? {
-        // Cache-control headers for static image assets served during `next dev`.
-        // Browsers will cache SVGs, PNGs and JPGs for up to 1 year on first hit,
-        // eliminating slow re-fetches.
-        headers: async () => [
-          {
-            // All generated SVG / photo assets under /images/.
-            source: "/images/:path*",
-            headers: [
-              {
-                key: "Cache-Control",
-                value: "public, max-age=31536000, immutable",
-              },
-            ],
-          },
-          {
-            // Top-level JPEG assets (e.g. the WhatsApp image in /public).
-            source: "/:file*.jpeg",
-            headers: [
-              {
-                key: "Cache-Control",
-                value: "public, max-age=86400, stale-while-revalidate=604800",
-              },
-            ],
-          },
-        ],
-      }
-    : { output: "export" }),
+  output: "export",
   basePath: BASE_PATH,
   trailingSlash: true,
   reactStrictMode: true,
